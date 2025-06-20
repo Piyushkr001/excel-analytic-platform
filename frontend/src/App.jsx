@@ -3,8 +3,8 @@ import Navbar from './components/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
 import Footer from './components/Footer';
+import Dashboard from './pages/DashBoard';
 
 function App() {
   // const isAuthenticated = !!localStorage.getItem('token');
