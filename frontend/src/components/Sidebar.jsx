@@ -1,26 +1,58 @@
-import { useState } from 'react';
-import { Menu, BarChart2, LogOut } from 'lucide-react';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { FiHome, FiUpload, FiClock, FiShield } from 'react-icons/fi';
 
-const Sidebar = () => {
-  const [open, setOpen] = useState(true);
+const menuItems = [
+  { text: 'Dashboard', path: '/dashboard', icon: <FiHome /> },
+  { text: 'Upload File', path: '/upload', icon: <FiUpload /> },
+  { text: 'History', path: '/history', icon: <FiClock /> },
+  { text: 'Admin Panel', path: '/admin', icon: <FiShield />, role: 'admin' },
+];
 
+const Sidebar = ({ role, sidebarOpen, setSidebarOpen }) => {
   return (
-    <div className={`bg-gray-900 text-white p-4 h-screen ${open ? 'w-64' : 'w-20'} transition-all duration-300`}>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-bold">{open && 'Dashboard'}</h1>
-        <Menu className="cursor-pointer" onClick={() => setOpen(!open)} />
+    <>
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-40 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`fixed md:static z-50 md:z-0 w-64 bg-white shadow-lg h-full transition-transform transform ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0`}
+      >
+        <div className="p-4 font-bold text-xl text-green-600 border-b">Excel Analytics</div>
+        <nav className="p-4">
+          <ul className="space-y-2">
+            {menuItems
+              .filter(item => !item.role || item.role === role)
+              .map(({ text, path, icon }) => (
+                <li key={text}>
+                  <NavLink
+                    to={path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 px-4 py-2 rounded text-gray-700 transition ${
+                        isActive
+                          ? 'bg-green-100 font-semibold text-green-700'
+                          : 'hover:bg-gray-100'
+                      }`
+                    }
+                  >
+                    <span className="text-lg">{icon}</span>
+                    <span>{text}</span>
+                  </NavLink>
+                </li>
+              ))}
+          </ul>
+        </nav>
       </div>
-      <ul className="space-y-4">
-        <li className="flex items-center space-x-2 cursor-pointer hover:text-gray-300">
-          <BarChart2 />
-          {open && <span>Analytics</span>}
-        </li>
-        <li className="flex items-center space-x-2 cursor-pointer hover:text-gray-300">
-          <LogOut />
-          {open && <span>Logout</span>}
-        </li>
-      </ul>
-    </div>
+    </>
   );
 };
 
