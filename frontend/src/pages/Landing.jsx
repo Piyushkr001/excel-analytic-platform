@@ -29,7 +29,7 @@ export default function Landing() {
         {/* Right: Image / Illustration */}
         <div className="flex justify-center">
           <img
-            src="https://illustrations.popsy.co/gray/data-report.svg"
+            src="/src/assets/Images/Home-Photoroom.png"
             alt="Dashboard Illustration"
             className="w-full max-w-md"
           />
