@@ -7,7 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Footer from './components/Footer';
 
 function App() {
-  const isAuthenticated = !!localStorage.getItem('token');
+  // const isAuthenticated = !!localStorage.getItem('token');
 
   return (
     <>
@@ -18,8 +18,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
-            path="/dashboard"
-            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+            path="/dashboard" element ={<Dashboard/>}
+            // element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
           />
         </Routes>
         <Footer/>
