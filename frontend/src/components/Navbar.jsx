@@ -33,6 +33,7 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-6 items-center">
             <Link to="/" className="text-gray-700 hover:text-green-600 transition">Home</Link>
+            <Link to="/dashboard" className="text-gray-700 hover:text-green-600 transition">Dashboard</Link>
             <Link to="/features" className="text-gray-700 hover:text-green-600 transition">Features</Link>
             <Link to="/contact" className="text-gray-700 hover:text-green-600 transition">Contact</Link>
 
@@ -70,6 +71,7 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-white px-4 pt-2 pb-4 shadow-md space-y-2">
           <Link to="/" className="block text-gray-700 hover:text-green-600">Home</Link>
+          <Link to="/dashboard" className="block text-gray-700 hover:text-green-600">Dashboard</Link>
           <Link to="/features" className="block text-gray-700 hover:text-green-600">Features</Link>
           <Link to="/contact" className="block text-gray-700 hover:text-green-600">Contact</Link>
 
