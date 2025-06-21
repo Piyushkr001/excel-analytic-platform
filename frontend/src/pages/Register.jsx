@@ -36,16 +36,16 @@ export default function Register() {
     try {
       const res = await register(form);
       localStorage.setItem('token', res.data.token);
-      navigate('/');
+      alert('Registration successful!');
+      navigate('/dashboard');
     } catch (err) {
-      console.error('Registration error:', err);
-      alert('Registration failed. Please try again.');
+      console.error('🔴 Register error:', err.response?.data || err.message);
+      alert(err.response?.data?.error || 'Registration failed. Try again.');
     }
   };
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-indigo-100 grid grid-cols-1 md:grid-cols-2 items-center justify-center">
-
       {/* Left Branding Section */}
       <div className="md:flex flex-col items-center justify-center h-full p-12 bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
         <h1 className="text-4xl font-bold mb-4">Join Us 🎉</h1>
@@ -62,29 +62,15 @@ export default function Register() {
       {/* Right Form Section */}
       <div className="flex justify-center items-center px-6 py-10 md:py-20">
         <div className="w-full max-w-md">
-          <Paper
-            elevation={4}
-            className="w-full"
-            sx={{
-              padding: { xs: 3, md: 4 },
-              borderRadius: 4,
-              backgroundColor: '#ffffff',
-            }}
-          >
+          <Paper elevation={4} sx={{ padding: 4, borderRadius: 4 }}>
             <Typography
               variant="h5"
-              sx={{
-                color: 'primary.main',
-                fontWeight: 'bold',
-                textAlign: 'center',
-                mb: 3,
-              }}
+              sx={{ color: 'primary.main', fontWeight: 'bold', textAlign: 'center', mb: 3 }}
             >
               Create Your Account
             </Typography>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
               <TextField
                 label="Name"
                 name="name"
@@ -93,7 +79,7 @@ export default function Register() {
                 placeholder="John Doe"
                 fullWidth
                 variant="outlined"
-                sx={{ bgcolor: 'background.paper' }}
+                autoComplete="name"
               />
 
               <TextField
@@ -105,7 +91,7 @@ export default function Register() {
                 placeholder="you@example.com"
                 fullWidth
                 variant="outlined"
-                sx={{ bgcolor: 'background.paper' }}
+                autoComplete="email"
               />
 
               <TextField
@@ -117,7 +103,7 @@ export default function Register() {
                 placeholder="Password"
                 fullWidth
                 variant="outlined"
-                sx={{ bgcolor: 'background.paper' }}
+                autoComplete="new-password"
               />
 
               <FormControl fullWidth>
@@ -127,7 +113,6 @@ export default function Register() {
                   value={form.role}
                   label="Role"
                   onChange={handleChange}
-                  sx={{ bgcolor: 'background.paper' }}
                 >
                   {roles.map((role) => (
                     <MenuItem key={role} value={role}>
@@ -145,9 +130,7 @@ export default function Register() {
                 sx={{
                   mt: 2,
                   backgroundColor: '#1976d2',
-                  '&:hover': {
-                    backgroundColor: '#115293',
-                  },
+                  '&:hover': { backgroundColor: '#115293' },
                   py: 1.3,
                   fontWeight: 'bold',
                   fontSize: '1rem',
@@ -155,14 +138,9 @@ export default function Register() {
               >
                 Register
               </Button>
-
             </form>
 
-            <Typography
-              variant="body2"
-              align="center"
-              sx={{ mt: 3 }}
-            >
+            <Typography variant="body2" align="center" sx={{ mt: 3 }}>
               Already have an account?{' '}
               <a href="/login" className="text-blue-600 hover:underline">Login</a>
             </Typography>

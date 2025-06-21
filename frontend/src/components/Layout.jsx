@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Sidebar from './Sidebar';
-import { Hamburger, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 export default function Layout({ children, role = 'user' }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
