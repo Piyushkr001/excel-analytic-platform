@@ -1,4 +1,5 @@
 import { Button } from 'primereact/button';
+import { Link } from 'react-router-dom';
 
 export default function Landing() {
   return (
@@ -14,15 +15,19 @@ export default function Landing() {
             Upload your Excel files, generate beautiful charts, and gain instant insights using AI. Fast, simple, and powerful.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button
-              label="Get Started"
-              icon="pi pi-check"
-              className="bg-green-600 border-none px-5 py-2 text-white text-lg"
-            />
-            <Button
-              label="Learn More"
-              className="p-button-outlined text-green-700 border-green-600 px-5 py-2 text-lg"
-            />
+            <Link to="/dashboard">
+              <Button
+                label="Get Started"
+                icon="pi pi-check"
+                className="bg-green-600 border-none px-5 py-2 rounded-2xl text-white text-lg"
+              />
+            </Link>
+            <Link to="/features">
+              <Button
+                label="Learn More"
+                className="p-button-outlined text-green-700 rounded-2xl border-green-600 px-5 py-2 text-lg"
+              />
+            </Link>
           </div>
         </div>
 

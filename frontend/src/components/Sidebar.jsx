@@ -4,9 +4,9 @@ import { FiHome, FiUpload, FiClock, FiShield } from 'react-icons/fi';
 
 const menuItems = [
   { text: 'Dashboard', path: '/dashboard', icon: <FiHome /> },
-  { text: 'Upload File', path: '/upload', icon: <FiUpload /> },
-  { text: 'History', path: '/history', icon: <FiClock /> },
-  { text: 'Admin Panel', path: '/admin', icon: <FiShield />, role: 'admin' },
+  { text: 'Upload File', path: '/dashboard/upload', icon: <FiUpload /> },
+  { text: 'History', path: '/dashboard/history', icon: <FiClock /> },
+  { text: 'Admin Panel', path: '/dashboard/admin', icon: <FiShield />, role: 'admin' },
 ];
 
 const Sidebar = ({ role, sidebarOpen, setSidebarOpen }) => {
@@ -35,6 +35,7 @@ const Sidebar = ({ role, sidebarOpen, setSidebarOpen }) => {
                 <li key={text}>
                   <NavLink
                     to={path}
+                    end={path === '/dashboard'} // ✅ only exact match activates 'Dashboard'
                     onClick={() => setSidebarOpen(false)}
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-4 py-2 rounded text-gray-700 transition ${
