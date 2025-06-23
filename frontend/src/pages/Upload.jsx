@@ -17,12 +17,21 @@ export default function Upload() {
     const formData = new FormData();
     formData.append('excel', file);
 
+    const token = localStorage.getItem('token'); // ✅ get token
+
     try {
       setLoading(true);
-      const res = await axios.post('http://localhost:8000/api/excel/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      setData(res.data.data || []);
+      const res = await axios.post(
+        'http://localhost:8000/api/excel/upload',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`, // ✅ send token in header
+          },
+        }
+      );
+      setData(res.data.data);
     } catch (err) {
       console.error('❌ Upload failed:', err);
       alert('Upload failed. Try again.');
@@ -30,6 +39,7 @@ export default function Upload() {
       setLoading(false);
     }
   };
+
 
   return (
     <section className="p-6 max-w-7xl mx-auto">
@@ -49,11 +59,10 @@ export default function Upload() {
           <button
             onClick={handleUpload}
             disabled={loading}
-            className={`px-6 py-2 rounded text-white font-semibold text-sm transition ${
-              loading
+            className={`px-6 py-2 rounded text-white font-semibold text-sm transition ${loading
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-green-600 hover:bg-green-700'
-            }`}
+              }`}
           >
             {loading ? 'Uploading...' : 'Upload'}
           </button>
