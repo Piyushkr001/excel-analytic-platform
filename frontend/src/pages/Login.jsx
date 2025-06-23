@@ -24,10 +24,12 @@ export default function Login() {
     try {
       const res = await login(form);
       localStorage.setItem('token', res.data.token);
-      navigate('/');
+      alert('Login successful!');
+      navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
-      alert('Login failed. Please check your credentials.');
+      const message = err?.response?.data?.error || 'Login failed. Please check your credentials.';
+      alert(message);
     }
   };
 
@@ -49,28 +51,12 @@ export default function Login() {
       {/* Right Section */}
       <div className="flex items-center justify-center bg-white px-6 py-12">
         <div className="w-full max-w-md">
-          <Paper
-            elevation={4}
-            sx={{
-              padding: { xs: 3, md: 4 },
-              borderRadius: 4,
-              backgroundColor: '#fff',
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{
-                color: 'success.main',
-                fontWeight: 'bold',
-                textAlign: 'center',
-                mb: 3,
-              }}
-            >
+          <Paper elevation={4} sx={{ padding: 4, borderRadius: 4 }}>
+            <Typography variant="h5" sx={{ color: 'success.main', fontWeight: 'bold', textAlign: 'center', mb: 3 }}>
               Sign in to your account
             </Typography>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
               <TextField
                 label="Email"
                 name="email"
@@ -80,7 +66,7 @@ export default function Login() {
                 type="email"
                 fullWidth
                 variant="outlined"
-                sx={{ bgcolor: 'background.paper' }}
+                autoComplete="email"
               />
 
               <TextField
@@ -92,7 +78,7 @@ export default function Login() {
                 type="password"
                 fullWidth
                 variant="outlined"
-                sx={{ bgcolor: 'background.paper' }}
+                autoComplete="current-password"
               />
 
               <Button
@@ -103,9 +89,7 @@ export default function Login() {
                 sx={{
                   mt: 2,
                   backgroundColor: 'success.main',
-                  '&:hover': {
-                    backgroundColor: 'success.dark',
-                  },
+                  '&:hover': { backgroundColor: 'success.dark' },
                   py: 1.3,
                   fontWeight: 'bold',
                   fontSize: '1rem',
@@ -115,11 +99,7 @@ export default function Login() {
               </Button>
             </form>
 
-            <Typography
-              variant="body2"
-              align="center"
-              sx={{ mt: 3 }}
-            >
+            <Typography variant="body2" align="center" sx={{ mt: 3 }}>
               Don&apos;t have an account?{' '}
               <a href="/register" className="text-green-600 hover:underline">
                 Register

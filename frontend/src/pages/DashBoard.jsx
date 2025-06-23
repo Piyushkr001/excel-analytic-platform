@@ -1,10 +1,11 @@
+// src/pages/DashBoard.jsx
+import { Outlet } from 'react-router-dom';
 import Layout from '../components/Layout';
 
 export default function Dashboard() {
   return (
     <Layout>
-      <h1 className="text-2xl font-bold">Welcome to Excel Analytics Platform</h1>
-      <p className="text-gray-600 mt-2">You're now logged in 🎉</p>
+      <Outlet /> {/* Nested routes like /dashboard/upload, /dashboard/history go here */}
     </Layout>
   );
 }

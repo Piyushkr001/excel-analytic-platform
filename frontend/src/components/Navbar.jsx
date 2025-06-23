@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
 
@@ -7,12 +7,12 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Check auth on mount
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
-  }, []);
+  }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -25,9 +25,13 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
 
-          {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-green-700">
-            ExcelAnalytics
+          {/* ✅ Fixed Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <img
+              src="/src/assets/Logo/logo.svg" // <- Ensure this file is in your /public directory
+              alt="Xcellytics Logo"
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Menu */}

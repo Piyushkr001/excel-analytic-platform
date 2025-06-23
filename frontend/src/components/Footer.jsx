@@ -10,7 +10,13 @@ export default function Footer() {
 
                 {/* Logo / About */}
                 <div>
-                    <h2 className="text-2xl font-bold text-green-700 mb-2">ExcelAnalytics</h2>
+                    <h2 className="text-2xl font-bold text-green-700 mb-2">
+                        <img
+                            src="/src/assets/Logo/logo.svg" // <- Ensure this file is in your /public directory
+                            alt="Xcellytics Logo"
+                            className="h-10 w-auto"
+                        />
+                    </h2>
                     <p className="text-sm">
                         Upload Excel files, generate charts, and gain insights with ease.
                     </p>
