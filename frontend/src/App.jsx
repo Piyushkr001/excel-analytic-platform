@@ -8,7 +8,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/DashBoard'; // Parent layout
 import DashboardHome from './pages/DashboardHome'; // ✅ Import the default dashboard child
 import Upload from './pages/Upload';
-// import History from './pages/History';
+import History from './pages/History';
 // import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
 
@@ -34,8 +34,8 @@ function App() {
               {/* ✅ Nested routes inside Dashboard layout */}
               <Route index element={<DashboardHome />} />
               <Route path="upload" element={<Upload />} />
-              {/* <Route path="history" element={<History />} />
-              <Route path="admin" element={<Admin />} /> */}
+              <Route path="history" element={<History />} />
+              {/* <Route path="admin" element={<Admin />} />  */}
             </Route>
           </Routes>
         </div>
