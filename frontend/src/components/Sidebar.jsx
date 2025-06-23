@@ -26,7 +26,13 @@ const Sidebar = ({ role, sidebarOpen, setSidebarOpen }) => {
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0`}
       >
-        <div className="p-4 font-bold text-xl text-green-600 border-b">Excel Analytics</div>
+        <div className="p-4 font-bold text-xl text-green-600 border-b">
+          <img
+              src="/src/assets/Logo/logo.svg" // <- Ensure this file is in your /public directory
+              alt="Xcellytics Logo"
+              className="h-10 w-auto"
+            />
+        </div>
         <nav className="p-4">
           <ul className="space-y-2">
             {menuItems

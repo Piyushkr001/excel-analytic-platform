@@ -7,9 +7,8 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // 👈 To detect route changes
+  const location = useLocation();
 
-  // ✅ Re-check auth status on route change
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
@@ -26,9 +25,13 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
 
-          {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-green-700">
-            ExcelAnalytics
+          {/* ✅ Fixed Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <img
+              src="/src/assets/Logo/logo.svg" // <- Ensure this file is in your /public directory
+              alt="Xcellytics Logo"
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Menu */}
@@ -50,7 +53,6 @@ export default function Navbar() {
               </>
             ) : (
               <button
-
                 onClick={handleLogout}
                 className="text-red-600 font-medium hover:underline"
               >
