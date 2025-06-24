@@ -46,7 +46,7 @@ const Sidebar = ({ role, sidebarOpen, setSidebarOpen }) => {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-4 py-2 rounded text-gray-700 transition ${
                         isActive
-                          ? 'bg-green-100 font-semibold text-green-700'
+                          ? 'bg-green-200 font-semibold text-green-700'
                           : 'hover:bg-gray-100'
                       }`
                     }

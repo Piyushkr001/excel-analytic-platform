@@ -44,7 +44,7 @@ export default function History() {
       <div className="bg-white shadow-lg rounded-lg p-6">
         <h2 className="text-2xl font-bold text-green-700 mb-6 flex items-center gap-2">
           <FiClock className="text-3xl" />
-          Upload History
+          Your Uploads History
         </h2>
 
         {loading ? (
