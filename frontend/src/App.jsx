@@ -11,6 +11,7 @@ import Upload from './pages/Upload';
 import History from './pages/History';
 // import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
+import Features from './pages/Features';
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path = "/features" element={<Features/>}/>
+            
 
             <Route
               path="/dashboard"

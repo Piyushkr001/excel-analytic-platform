@@ -8,11 +8,11 @@ export default function Landing() {
         
         {/* Left: Text Content */}
         <div className="space-y-6">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-green-700 leading-tight">
-            Analyze Excel Files <br /> Visually with AI Insights
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-700 leading-tight">
+            Empower Your Data with <span className='text-green-700'>Xcellytics</span>
           </h1>
           <p className="text-gray-700 text-lg md:text-xl">
-            Upload your Excel files, generate beautiful charts, and gain instant insights using AI. Fast, simple, and powerful.
+            Upload your Excel files, generate beautiful charts, and gain instant insights. Fast, simple, and powerful.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link to="/dashboard">
