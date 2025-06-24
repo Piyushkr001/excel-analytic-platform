@@ -1,5 +1,5 @@
-import React from 'react'
-import { FaChartBar, FaClock, FaCogs, FaBolt } from 'react-icons/fa'
+import React from 'react';
+import { FaChartBar, FaClock, FaCogs, FaBolt } from 'react-icons/fa';
 
 const features = [
   {
@@ -12,48 +12,47 @@ const features = [
     icon: <FaClock className="text-white text-2xl" />,
     title: "Automated Reporting",
     description:
-      "Generate custom, schedule-based reports in minutes, tailored to your specific needs and KPIs. Save time, reduce errors.",
+      "Generate custom, schedule-based reports in minutes, tailored to your specific needs and KPIs.",
   },
   {
     icon: <FaCogs className="text-white text-2xl" />,
     title: "Customizable Dashboards",
     description:
-      "Design personalized dashboards with drag-and-drop simplicity to monitor key metrics at a glance. Your data, your way.",
+      "Design personalized dashboards with drag-and-drop simplicity to monitor key metrics at a glance.",
   },
   {
     icon: <FaBolt className="text-white text-2xl" />,
     title: "Seamless Excel Integration",
     description:
-      "Connect effortlessly with your existing Excel files and cloud services for real-time analysis and synchronization.",
+      "Connect effortlessly with your existing Excel files and cloud services for real-time analysis.",
   },
-]
+];
 
-function Features() {
+export default function Features() {
   return (
-    <div className="flex flex-col items-center bg-gradient-to-br from-green-100 via-white to-teal-100 px-4 min-h-screen py-16">
-      <h2 className="font-bold text-4xl text-center mb-4">
-        Unlock Powerful Analytics Capabilities
-      </h2>
-      <p className="text-lg text-gray-400 text-center max-w-2xl mb-12">
-        Everything you need to turn raw data into brilliant business decisions, all in one place.
-      </p>
+    <section className="bg-gradient-to-br from-green-50 via-white to-teal-100 py-20 px-4">
+      <div className="max-w-7xl mx-auto text-center">
+        <h2 className="text-4xl sm:text-5xl font-extrabold text-green-700 mb-4">
+          Unlock Powerful Analytics Capabilities
+        </h2>
+        <p className="text-lg sm:text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+          Everything you need to turn raw data into brilliant business decisions, all in one place.
+        </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-10 gap-6 w-full max-w-7xl">
-        {features.map((feature, idx) => (
-          <div
-            key={idx}
-            className="bg-white rounded-2xl p-6 hover:shadow-lg border h-80 border-slate-700 transform transition-transform duration-300 hover:-translate-y-2  hover:shadow-blue-600/20"
-          >
-            <div className="bg-gradient-to-br from-purple-500 to-pink-500 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-              {feature.icon}
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature, idx) => (
+            <div
+              key={idx}
+               className="bg-white rounded-3xl p-6 flex flex-col shadow-md hover:shadow-xl hover:shadow-green-300/30 border border-gray-200 hover:border-green-400 h-80 transform transition-transform duration-300 hover:-translate-y-2">
+              <div className="bg-gradient-to-br from-green-500 to-teal-400 w-14 h-14 rounded-xl flex items-center justify-center shadow-md mb-6 mx-auto">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">{feature.title}</h3>
+              <p className="text-sm text-gray-500">{feature.description}</p>
             </div>
-            <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-            <p className="text-sm text-gray-400">{feature.description}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  )
+    </section>
+  );
 }
-
-export default Features
