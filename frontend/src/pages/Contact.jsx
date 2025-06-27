@@ -1,25 +1,159 @@
-  <section id="contact" style="padding: 40px; background-color: #f9f9f9;">
-  <div style="max-width: 800px; margin: auto;">
-    <h2 style="text-align: center;">Contact Us</h2>
-    
-    <form action="/contact" method="POST" style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px;">
-      <input type="text" name="name" placeholder="Your Name" required style="padding: 10px;">
-      <input type="email" name="email" placeholder="Your Email" required style="padding: 10px;">
-      <textarea name="message" placeholder="Your Message" rows="5" required style="padding: 10px;"></textarea>
-      <button type="submit" style="padding: 10px; background-color: #4CAF50; color: white; border: none;">Send Message</button>
-     </form>
+/* eslint-disable no-unused-vars */
+import React from 'react';
+import { MapPin, MailIcon, Phone } from 'lucide-react';
 
-    <div style="margin-top: 40px;">
-      <h3>Contact Details</h3>
-      <p><strong>Email:</strong> support@xcellytics.com</p>
-      <p><strong>Phone:</strong> +91-9876543210</p>
-      <p><strong>Address:</strong> 123, Analytics Street, Pune, India</p>
-    </div>
 
-    <!-- Optional: Google Maps Embed -->
-    <div style="margin-top: 30px;">
-      <iframe src="https://maps.google.com/maps?q=pune&t=&z=13&ie=UTF8&iwloc=&output=embed"
-              width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-    </div>
-  </div>
-</section>
+export default function Contact() {
+  return (
+    <section className="min-h-screen px-4 py-10 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 via-white to-sky-50">
+      {/* ---------- Page Header ---------- */}
+      <header className="text-center mb-12">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
+          Contact{' '}
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 via-sky-600 to-violet-700">
+            Our&nbsp;Team
+          </span>
+        </h2>
+        <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+          We're here to help you unlock the power of your data. Reach out with any
+          questions or to start your journey with&nbsp;
+          <span className="font-semibold">Xcellytics</span>.
+        </p>
+      </header>
+
+      {/* ---------- Main Grid ---------- */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 max-w-6xl mx-auto">
+        {/* ======== Contact Cards ======== */}
+        <div className="space-y-6 lg:col-span-2">
+          {[
+            {
+              iconBg: 'from-emerald-500 to-emerald-700',
+              Icon: MapPin,
+              title: 'Our Office',
+              lines: ['123 Data Drive, Suite 500', 'Analytics City, AC 12345'],
+            },
+            {
+              iconBg: 'from-sky-400 to-sky-600',
+              Icon: MailIcon,
+              title: 'Email Us',
+              lines: ['support@excelytic.com', 'sales@excelytic.com'],
+            },
+            {
+              iconBg: 'from-indigo-500 to-indigo-700',
+              Icon: Phone,
+              title: 'Call Us',
+              lines: ['Mon–Fri • 8 am – 5 pm', '+1 (555) 123-4567'],
+            },
+          ].map(({ Icon, iconBg, title, lines }) => (
+            <div
+              key={title}
+              className="flex p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300"
+            >
+              <div
+                className={`flex-shrink-0 text-white bg-gradient-to-br ${iconBg} w-12 h-12 mr-4 rounded-xl flex items-center justify-center`}
+              >
+                <Icon className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+                {lines.map((l) => (
+                  <p key={l} className="text-gray-600 leading-relaxed">
+                    {l}
+                  </p>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ======== Contact Form ======== */}
+        <div className="lg:col-span-3">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex flex-col gap-6 p-8 bg-white rounded-2xl shadow-xl border border-gray-200"
+          >
+            <h3 className="text-2xl font-bold text-gray-900">
+              Send us a Message&nbsp;🚀
+            </h3>
+
+            {/* First / Last Name */}
+            <div className="flex flex-col sm:flex-row gap-6">
+              <div className="flex-1">
+                <label htmlFor="firstName" className="block mb-2 text-sm font-medium text-gray-700">
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  type="text"
+                  placeholder="John"
+                  className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+                  required
+                />
+              </div>
+              <div className="flex-1">
+                <label htmlFor="lastName" className="block mb-2 text-sm font-medium text-gray-700">
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  type="text"
+                  placeholder="Doe"
+                  className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
+                Your Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                placeholder="name@company.com"
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+                required
+              />
+            </div>
+
+            {/* Subject */}
+            <div>
+              <label htmlFor="subject" className="block mb-2 text-sm font-medium text-gray-700">
+                Subject
+              </label>
+              <input
+                id="subject"
+                type="text"
+                placeholder="Let us know how we can help you"
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+              />
+            </div>
+
+            {/* Message */}
+            <div>
+              <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-700">
+                Your Message
+              </label>
+              <textarea
+                id="message"
+                rows={5}
+                placeholder="Leave a comment..."
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500 resize-none"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="mt-2 w-full rounded-lg bg-gradient-to-r from-emerald-500 to-indigo-600 px-6 py-3 text-center text-white font-semibold shadow-md hover:opacity-90 transition"
+            >
+              Send&nbsp;Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
+}
