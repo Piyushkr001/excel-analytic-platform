@@ -9,12 +9,12 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import DashboardHome from './pages/DashboardHome';
-import Upload from './pages/Upload';
 import History from './pages/History';
 // import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
 import Features from './pages/Features';
 import Contact from './pages/Contact';
+import UploadAndChart from './pages/UploadAndChart';
 
 function App() {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ function App() {
             >
               {/* ✅ Nested routes inside Dashboard layout */}
               <Route index element={<DashboardHome />} />
-              <Route path="upload" element={<Upload />} />
+              <Route path="upload" element={<UploadAndChart />} />
               <Route path="history" element={<History />} />
               {/* <Route path="admin" element={<Admin />} />  */}
             </Route>

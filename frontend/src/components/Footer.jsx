@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaFacebookF, FaLinkedinIn, FaGithub } from 'react-icons/fa';
 import { PiXLogoBold } from 'react-icons/pi';

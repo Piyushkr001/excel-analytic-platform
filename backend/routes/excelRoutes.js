@@ -21,13 +21,13 @@ router.post('/upload', verifyToken, upload.single('excel'), async (req, res) => 
     const sheet = workbook.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(sheet);
 
-    const uploadId = uuidv4(); // Unique ID per upload
+    const uploadId = uuidv4();
 
     const recordsWithMeta = jsonData.map(row => ({
       ...row,
       uploadId,
       uploadedAt: new Date(),
-      uploadedBy: req.user.id, // From verifyToken middleware
+      uploadedBy: req.user.id,
     }));
 
     await ExcelRecord.insertMany(recordsWithMeta);
@@ -36,15 +36,18 @@ router.post('/upload', verifyToken, upload.single('excel'), async (req, res) => 
       if (err) console.warn('Temp file not deleted:', filePath);
     });
 
+    // ✅ INCLUDE uploadId in response
     res.status(200).json({
       message: 'File parsed and saved successfully',
       data: recordsWithMeta,
+      uploadId, // ✅ this makes Save Chart work
     });
   } catch (error) {
     console.error('Excel parsing error:', error);
     res.status(500).json({ error: 'Failed to parse or save Excel file' });
   }
 });
+
 
 // GET /api/excel/history (Protected)
 router.get('/history', verifyToken, async (req, res) => {

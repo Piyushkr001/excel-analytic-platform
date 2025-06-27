@@ -5,6 +5,7 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import excelRoutes from './routes/excelRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
+import chartRoutes from './routes/chartRoutes.js';
 
 dotenv.config(); 
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/excel', excelRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/charts', chartRoutes);
 
 // DB & Server
 const PORT = process.env.PORT || 8000;
