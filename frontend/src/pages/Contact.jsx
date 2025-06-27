@@ -1,9 +1,37 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
-import { MapPin, MailIcon, Phone } from 'lucide-react';
-
+import React, { useState } from 'react';
+import axios from 'axios';
+import { MapPin, Mail as MailIcon, Phone } from 'lucide-react'; // MailIcon alias
 
 export default function Contact() {
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      await axios.post('http://localhost:8000/api/contact', form);
+      alert('Message sent! 🎉');
+      setForm({ firstName: '', lastName: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      console.error('❌ Contact error:', err);
+      alert(err.response?.data?.error || 'Something went wrong.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ---------- UI ----------
   return (
     <section className="min-h-screen px-4 py-10 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 via-white to-sky-50">
       {/* ---------- Page Header ---------- */}
@@ -15,7 +43,7 @@ export default function Contact() {
           </span>
         </h2>
         <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-          We're here to help you unlock the power of your data. Reach out with any
+          We’re here to help you unlock the power of your data. Reach out with any
           questions or to start your journey with&nbsp;
           <span className="font-semibold">Xcellytics</span>.
         </p>
@@ -69,7 +97,7 @@ export default function Contact() {
         {/* ======== Contact Form ======== */}
         <div className="lg:col-span-3">
           <form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
             className="flex flex-col gap-6 p-8 bg-white rounded-2xl shadow-xl border border-gray-200"
           >
             <h3 className="text-2xl font-bold text-gray-900">
@@ -84,8 +112,11 @@ export default function Contact() {
                 </label>
                 <input
                   id="firstName"
+                  name="firstName"
                   type="text"
                   placeholder="John"
+                  value={form.firstName}
+                  onChange={handleChange}
                   className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
                   required
                 />
@@ -96,8 +127,11 @@ export default function Contact() {
                 </label>
                 <input
                   id="lastName"
+                  name="lastName"
                   type="text"
                   placeholder="Doe"
+                  value={form.lastName}
+                  onChange={handleChange}
                   className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
                   required
                 />
@@ -111,8 +145,11 @@ export default function Contact() {
               </label>
               <input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="name@company.com"
+                value={form.email}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
                 required
               />
@@ -125,8 +162,11 @@ export default function Contact() {
               </label>
               <input
                 id="subject"
+                name="subject"
                 type="text"
                 placeholder="Let us know how we can help you"
+                value={form.subject}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
               />
             </div>
@@ -138,18 +178,23 @@ export default function Contact() {
               </label>
               <textarea
                 id="message"
+                name="message"
                 rows={5}
                 placeholder="Leave a comment..."
+                value={form.message}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500 resize-none"
+                required
               />
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="mt-2 w-full rounded-lg bg-gradient-to-r from-emerald-500 to-indigo-600 px-6 py-3 text-center text-white font-semibold shadow-md hover:opacity-90 transition"
+              disabled={loading}
+              className="mt-2 w-full rounded-lg bg-gradient-to-r from-emerald-500 to-indigo-600 px-6 py-3 text-center text-white font-semibold shadow-md hover:opacity-90 transition disabled:opacity-60"
             >
-              Send&nbsp;Message
+              {loading ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         </div>
