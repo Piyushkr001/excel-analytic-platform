@@ -1,19 +1,43 @@
-// src/App.jsx
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode'; 
+
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/DashBoard'; // Parent layout
-import DashboardHome from './pages/DashboardHome'; // ✅ Import the default dashboard child
+import Dashboard from './pages/Dashboard';
+import DashboardHome from './pages/DashboardHome';
 import Upload from './pages/Upload';
 import History from './pages/History';
 // import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
 import Features from './pages/Features';
+import Contact from './pages/Contact';
 
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const isExpired = decoded.exp * 1000 < Date.now();
+        if (isExpired) {
+          console.warn('⚠️ Token expired. Logging out.');
+          localStorage.removeItem('token');
+          navigate('/login');
+        }
+      } catch (err) {
+        console.error('❌ Invalid token:', err); // Log the error for debugging
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    }
+  }, [navigate]);
+
   return (
     <>
       <Navbar />
@@ -23,10 +47,10 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path = "/features" element={<Features/>}/>
-            
+            <Route path="/features" element={<Features />} />
+            <Route path="/contact" element={<Contact />} />
 
-            <Route
+             <Route
               path="/dashboard"
               element={
                 <PrivateRoute>

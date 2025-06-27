@@ -17,7 +17,7 @@ export default function Upload() {
     const formData = new FormData();
     formData.append('excel', file);
 
-    const token = localStorage.getItem('token'); // ✅ get token
+    const token = localStorage.getItem('token');
 
     try {
       setLoading(true);
@@ -27,7 +27,7 @@ export default function Upload() {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`, // ✅ send token in header
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -40,16 +40,38 @@ export default function Upload() {
     }
   };
 
-
   return (
-    <section className="p-6 max-w-7xl mx-auto">
+    <section className="p-4 sm:p-6 max-w-7xl bg-gradient-to-br mx-auto">
+      {/* Hero Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-10 mb-10">
+        <div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
+            Upload and Analyze{' '}
+            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+              Excel
+            </span>{' '}
+            Data Instantly
+          </h1>
+        </div>
+
+        {/* ✅ Hide on mobile */}
+        <div className="hidden md:flex justify-center">
+          <img
+            src="/src/assets/Images/Upload Illustration.png"
+            alt="Excel illustration"
+            className="w-full max-w-sm object-contain"
+          />
+        </div>
+      </div>
+
+      {/* Upload Card */}
       <div className="bg-white shadow-xl rounded-lg p-6 border border-gray-200">
         <h2 className="text-2xl font-bold text-green-700 mb-6 flex items-center gap-2">
           <FiUploadCloud className="text-3xl" />
           Upload Excel File
         </h2>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
           <input
             type="file"
             accept=".xlsx,.xls"
@@ -59,10 +81,11 @@ export default function Upload() {
           <button
             onClick={handleUpload}
             disabled={loading}
-            className={`px-6 py-2 rounded text-white font-semibold text-sm transition ${loading
+            className={`px-6 py-2 rounded text-white font-semibold text-sm transition ${
+              loading
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-green-600 hover:bg-green-700'
-              }`}
+            }`}
           >
             {loading ? 'Uploading...' : 'Upload'}
           </button>
@@ -70,34 +93,43 @@ export default function Upload() {
 
         {/* Parsed Data Table */}
         {data.length > 0 && (
-          <div className="mt-10">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Parsed Data:</h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm border border-gray-300">
-                <thead>
-                  <tr className="bg-green-100 text-left">
-                    {Object.keys(data[0]).map((key) => (
-                      <th key={key} className="px-4 py-2 border">{key}</th>
+          <div className="mt-8 overflow-x-auto">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">
+              Parsed Data:
+            </h3>
+            <table className="min-w-full text-sm border border-gray-300">
+              <thead>
+                <tr className="bg-green-100 text-left">
+                  {Object.keys(data[0]).map((key) => (
+                    <th key={key} className="px-4 py-2 border">
+                      {key}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((row, idx) => (
+                  <tr
+                    key={idx}
+                    className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                  >
+                    {Object.values(row).map((val, i) => (
+                      <td key={i} className="px-4 py-2 border">
+                        {typeof val === 'object' ? JSON.stringify(val) : val}
+                      </td>
                     ))}
                   </tr>
-                </thead>
-                <tbody>
-                  {data.map((row, idx) => (
-                    <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      {Object.values(row).map((val, i) => (
-                        <td key={i} className="px-4 py-2 border">{val}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
 
         {/* Empty State */}
         {!loading && data.length === 0 && (
-          <p className="text-gray-500 mt-6 text-sm italic">No data uploaded yet.</p>
+          <p className="text-gray-500 mt-6 text-sm italic">
+            No data uploaded yet.
+          </p>
         )}
       </div>
     </section>

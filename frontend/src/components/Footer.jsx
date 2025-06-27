@@ -5,7 +5,7 @@ import { PiXLogoBold } from 'react-icons/pi';
 
 export default function Footer() {
     return (
-        <footer className="bg-green-100 text-gray-700">
+        <footer className="bg-gradient-to-br from-green-100 via-white to-teal-100 text-gray-700">
             <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
 
                 {/* Logo / About */}
