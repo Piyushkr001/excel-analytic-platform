@@ -5,7 +5,7 @@ import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// GET /api/charts → Return chart config + Excel data
+// ✅ GET /api/charts → Return saved chart config + Excel data
 router.get('/', authenticate, async (req, res) => {
   try {
     const charts = await ChartConfig.find({ userId: req.user.id }).sort({ createdAt: -1 });
@@ -27,6 +27,32 @@ router.get('/', authenticate, async (req, res) => {
   } catch (err) {
     console.error('❌ Failed to load charts:', err);
     res.status(500).json({ error: 'Failed to load saved charts' });
+  }
+});
+
+// ✅ POST /api/charts → Save a new chart config
+router.post('/', authenticate, async (req, res) => {
+  const { uploadId, xField, yField, chartType } = req.body;
+  const userId = req.user.id;
+
+  if (!uploadId || !xField || !yField) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  try {
+    const chart = new ChartConfig({
+      uploadId,
+      userId,
+      xField,
+      yField,
+      chartType: chartType || 'line',
+    });
+
+    await chart.save();
+    res.status(201).json({ message: 'Chart saved successfully', chart });
+  } catch (err) {
+    console.error('❌ Error saving chart config:', err);
+    res.status(500).json({ error: 'Server error while saving chart' });
   }
 });
 
