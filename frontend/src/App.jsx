@@ -10,7 +10,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import DashboardHome from './pages/DashboardHome';
 import History from './pages/History';
-// import Admin from './pages/Admin';
+import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
 import Features from './pages/Features';
 import Contact from './pages/Contact';
@@ -62,7 +62,7 @@ function App() {
               <Route index element={<DashboardHome />} />
               <Route path="upload" element={<UploadAndChart />} />
               <Route path="history" element={<History />} />
-              {/* <Route path="admin" element={<Admin />} />  */}
+              <Route path="admin" element={<Admin />} /> 
             </Route>
           </Routes>
         </div>

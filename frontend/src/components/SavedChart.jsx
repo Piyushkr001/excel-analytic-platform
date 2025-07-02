@@ -27,8 +27,8 @@ export default function SavedCharts() {
 
   useEffect(() => {
     const fetchCharts = async () => {
-      const token = localStorage.getItem('token');
       try {
+        const token = localStorage.getItem('token');
         const { data } = await axios.get('http://localhost:8000/api/charts', {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -41,19 +41,21 @@ export default function SavedCharts() {
     fetchCharts();
   }, []);
 
-  if (charts.length === 0) {
+  if (!charts.length) {
     return (
-      <p className="text-gray-500 text-center mt-8">No charts saved yet.</p>
+      <p className="mt-10 text-center text-base text-gray-500">
+        No charts saved yet.
+      </p>
     );
   }
 
   return (
-    <div className="w-full mt-12">
-      <h2 className="text-xl font-semibold text-gray-700 mb-6 text-center">
+    <section className="mt-12 w-full rounded-3xl border border-gray-200 shadow-md">
+      <h2 className="mb-8 mt-5 text-center text-2xl font-semibold text-gray-700">
         📊 Your Saved Charts
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+      <div className="mx-auto mb-10 grid max-w-7xl gap-6 px-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
         {charts.map((chart) => {
           const labels = chart.data.map((row) => row[chart.xField]);
           const values = chart.data.map((row) => Number(row[chart.yField]) || 0);
@@ -71,49 +73,41 @@ export default function SavedCharts() {
             ],
           };
 
-          return (
-            <div
-              key={chart._id}
-              className="bg-white rounded-xl shadow-md p-4 sm:p-5 border border-gray-100 w-full max-w-xs"
-            >
-              <h3 className="text-sm font-semibold mb-3">
-                {chart.chartType.toUpperCase()} · {chart.xField} vs {chart.yField}
-              </h3>
+          const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { ticks: { font: { size: 10 } } } },
+          };
 
-              <div className="relative w-full h-40 sm:h-48">
-                {chart.chartType === 'bar' ? (
-                  <Bar
-                    data={chartData}
-                    options={{
-                      maintainAspectRatio: false,
-                      plugins: { legend: { display: false } },
-                      scales: {
-                        y: {
-                          ticks: { font: { size: 10 } },
-                        },
-                      },
-                    }}
-                  />
-                ) : (
-                  <Line
-                    data={chartData}
-                    options={{
-                      maintainAspectRatio: false,
-                      plugins: { legend: { display: false } },
-                      elements: { point: { radius: 2 } },
-                      scales: {
-                        y: {
-                          ticks: { font: { size: 10 } },
-                        },
-                      },
-                    }}
-                  />
-                )}
+          return (
+            <article
+              key={chart._id}
+              className="flex w-full flex-col overflow-hidden rounded-xl border border-gray-300 bg-white shadow hover:border-gray-400 transition-all"
+            >
+              <header className="px-4 pt-4 text-sm font-medium">
+                {chart.chartType.toUpperCase()} · {chart.xField} vs {chart.yField}
+              </header>
+
+              <div className="relative w-full grow">
+                <div className="aspect-[4/3]">
+                  {chart.chartType === 'bar' ? (
+                    <Bar data={chartData} options={commonOptions} />
+                  ) : (
+                    <Line
+                      data={chartData}
+                      options={{
+                        ...commonOptions,
+                        elements: { point: { radius: 2 } },
+                      }}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
+            </article>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
