@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaFacebookF, FaLinkedinIn, FaGithub } from 'react-icons/fa';
+import { FaFacebookF, FaLinkedinIn, FaInstagram } from 'react-icons/fa';
 import { PiXLogoBold } from 'react-icons/pi';
 
 export default function Footer() {
@@ -27,6 +27,7 @@ export default function Footer() {
                     <ul className="space-y-2 text-sm">
                         <li><Link to="/" className="hover:text-green-600 transition">Home</Link></li>
                         <li><Link to="/features" className="hover:text-green-600 transition">Features</Link></li>
+                        <li><Link to="/about" className="hover:text-green-600 transition">About Us</Link></li>
                         <li><Link to="/contact" className="hover:text-green-600 transition">Contact</Link></li>
                         <li><Link to="/register" className="hover:text-green-600 transition">Register</Link></li>
                     </ul>
@@ -39,7 +40,7 @@ export default function Footer() {
                         <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className="hover:text-green-500 transition"><FaFacebookF /></a>
                         <a href="https://x.com/" target="_blank" rel="noopener noreferrer" className="hover:text-green-500 transition"><PiXLogoBold /></a>
                         <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" className="hover:text-green-500 transition"><FaLinkedinIn /></a>
-                        <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="hover:text-green-500 transition"><FaGithub /></a>
+                        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" className="hover:text-green-500 transition"><FaInstagram /></a>
                     </div>
 
                 </div>

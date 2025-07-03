@@ -18,6 +18,7 @@ import UploadAndChart from './pages/UploadAndChart';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import { Toaster } from 'react-hot-toast';
+import AboutUs from './pages/AboutUs';
 
 function App() {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/features" element={<Features />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />        {/* ✅ new */}
             <Route path="/reset-password/:token" element={<ResetPassword />} />   {/* ✅ new */}
