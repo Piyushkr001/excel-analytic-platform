@@ -2,64 +2,73 @@ import React from 'react';
 
 export default function AboutUs() {
   return (
-    <section className="min-h-screen bg-gradient-to-br from-green-50 via-white to-sky-50 px-6 py-12">
-      {/* Header Section */}
-      <div className="max-w-5xl mx-auto text-center mb-16">
+    <section className="min-h-screen bg-gradient-to-br from-green-50 via-white to-sky-50 px-6 py-16">
+      {/* Header */}
+      <div className="max-w-5xl mx-auto text-center mb-20 animate-fadeIn">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-800">
           About <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-indigo-600">Xcellytics</span>
         </h1>
-        <p className="mt-4 text-gray-600 text-lg max-w-3xl mx-auto">
-          Discover how Xcellytics empowers users with seamless Excel data analytics, intuitive charting tools, and a user-first design.
+        <p className="mt-5 text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+          Empowering individuals and organizations with smart Excel analytics. Visualize, interpret, and share your data effortlessly.
         </p>
       </div>
 
-      {/* Info Section */}
-      <div className="flex flex-col md:flex-row items-center max-w-6xl mx-auto gap-12">
+      {/* Mission Section */}
+      <div className="flex flex-col-reverse md:flex-row items-center max-w-7xl mx-auto gap-12 animate-fadeIn">
+        {/* Text */}
+        <div className="flex-1 space-y-6">
+          <h2 className="text-3xl font-bold text-gray-800">Our Mission</h2>
+          <p className="text-gray-700 text-lg leading-relaxed">
+            At <strong>Xcellytics</strong>, our mission is to simplify data visualization for everyone. Whether you’re a student, a data analyst, or a business professional, our tools make working with spreadsheets easier and more powerful.
+          </p>
+          <p className="text-gray-700">
+            We focus on clean UI, seamless integration, and real-time analytics to ensure your data speaks volumes without technical friction.
+          </p>
+          <p className="text-gray-700">
+            Innovation and user-experience are at the core of everything we build.
+          </p>
+        </div>
+
         {/* Image */}
         <div className="flex-1">
           <img
             src="/src/assets/Images/Team Illustration.png"
-            alt="Team Illustration"
-            className="w-full max-w-md mx-auto md:max-w-full"
+            alt="Our Team Illustration"
+            className="w-full max-w-md mx-auto md:max-w-full rounded-xl shadow-md"
           />
-        </div>
-
-        {/* Text */}
-        <div className="flex-1 space-y-5">
-          <h2 className="text-3xl font-bold text-gray-800">
-            Our Mission
-          </h2>
-          <p className="text-gray-600 text-lg">
-            At <strong>Xcellytics</strong>, we're passionate about simplifying data. Our goal is to empower professionals, students, and teams to effortlessly analyze and visualize their Excel files through an easy-to-use platform.
-          </p>
-          <p className="text-gray-600">
-            We believe in blending powerful analytics with beautiful design. Whether you're exploring trends, presenting insights, or just trying to make sense of your spreadsheets, Xcellytics is here to help.
-          </p>
-          <p className="text-gray-600">
-            Our team continuously improves the platform to deliver fast, secure, and scalable tools that enhance your productivity.
-          </p>
         </div>
       </div>
 
-      {/* Team Section (Optional) */}
-      <div className="max-w-6xl mx-auto mt-20">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">Meet the Team</h2>
+      {/* Team Section */}
+      <div className="max-w-7xl mx-auto mt-24 animate-fadeIn">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">Meet the Team</h2>
         <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
           {[
-            { name: 'Piyush Kumar', role: 'Founder & Engineer', img: '/src/assets/Images/team1.png' },
-            { name: 'Aisha Mehta', role: 'Product Designer', img: '/src/assets/Images/team2.png' },
-            { name: 'Rohan Das', role: 'Data Scientist', img: '/src/assets/Images/team3.png' },
+            { name: 'Piyush Kumar', role: 'Web Developer (Full Stack)', img: '/src/assets/Images/team1.png' },
+            { name: 'Rajashree', role: 'Frontend Developer', img: '/src/assets/Images/team2.png' },
+            { name: 'Jayanth', role: 'Frontend Developer', img: '/src/assets/Images/team3.png' },
           ].map(({ name, role, img }) => (
             <div
               key={name}
-              className="flex flex-col items-center bg-white p-6 rounded-xl shadow hover:shadow-lg transition"
+              className="flex flex-col items-center bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform duration-300 hover:scale-105"
             >
-              <img src={img} alt={name} className="w-28 h-28 rounded-full object-cover mb-4" />
+              <img src={img} alt={name} className="w-24 h-24 rounded-full object-cover mb-4 shadow-sm" />
               <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
               <p className="text-sm text-gray-500">{role}</p>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* CTA */}
+      <div className="text-center mt-24">
+        <p className="text-gray-700 text-lg">Ready to experience smarter Excel analytics?</p>
+        <a
+          href="/register"
+          className="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-emerald-500 to-indigo-600 text-white font-semibold rounded-lg shadow hover:opacity-90 transition"
+        >
+          Get Started
+        </a>
       </div>
     </section>
   );
