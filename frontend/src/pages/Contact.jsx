@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import axios from 'axios';
-import { MapPin, Mail as MailIcon, Phone } from 'lucide-react'; // MailIcon alias
+import { MapPin, Mail as MailIcon, Phone, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -21,20 +22,25 @@ export default function Contact() {
     try {
       setLoading(true);
       await axios.post('http://localhost:8000/api/contact', form);
-      alert('Message sent! 🎉');
-      setForm({ firstName: '', lastName: '', email: '', subject: '', message: '' });
+      toast.success('Message sent! 🎉');
+      setForm({
+        firstName: '',
+        lastName: '',
+        email: '',
+        subject: '',
+        message: '',
+      });
     } catch (err) {
       console.error('❌ Contact error:', err);
-      alert(err.response?.data?.error || 'Something went wrong.');
+      toast.error(err.response?.data?.error || 'Something went wrong.');
     } finally {
       setLoading(false);
     }
   };
 
-  // ---------- UI ----------
   return (
     <section className="min-h-screen px-4 py-10 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 via-white to-sky-50">
-      {/* ---------- Page Header ---------- */}
+      {/* Header */}
       <header className="text-center mb-12">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
           Contact{' '}
@@ -44,14 +50,13 @@ export default function Contact() {
         </h2>
         <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
           We’re here to help you unlock the power of your data. Reach out with any
-          questions or to start your journey with&nbsp;
-          <span className="font-semibold">Xcellytics</span>.
+          questions or to start your journey with <span className="font-semibold">Xcellytics</span>.
         </p>
       </header>
 
-      {/* ---------- Main Grid ---------- */}
+      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 max-w-6xl mx-auto">
-        {/* ======== Contact Cards ======== */}
+        {/* Contact Cards */}
         <div className="space-y-6 lg:col-span-2">
           {[
             {
@@ -94,84 +99,51 @@ export default function Contact() {
           ))}
         </div>
 
-        {/* ======== Contact Form ======== */}
+        {/* Contact Form */}
         <div className="lg:col-span-3">
           <form
             onSubmit={handleSubmit}
             className="flex flex-col gap-6 p-8 bg-white rounded-2xl shadow-xl border border-gray-200"
           >
             <h3 className="text-2xl font-bold text-gray-900">
-              Send us a Message&nbsp;🚀
+              Send us a Message 🚀
             </h3>
 
             {/* First / Last Name */}
             <div className="flex flex-col sm:flex-row gap-6">
-              <div className="flex-1">
-                <label htmlFor="firstName" className="block mb-2 text-sm font-medium text-gray-700">
-                  First Name
-                </label>
-                <input
-                  id="firstName"
-                  name="firstName"
-                  type="text"
-                  placeholder="John"
-                  value={form.firstName}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
-                  required
-                />
-              </div>
-              <div className="flex-1">
-                <label htmlFor="lastName" className="block mb-2 text-sm font-medium text-gray-700">
-                  Last Name
-                </label>
-                <input
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  placeholder="Doe"
-                  value={form.lastName}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
-                Your Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="name@company.com"
-                value={form.email}
+              <InputField
+                label="First Name"
+                name="firstName"
+                placeholder="John"
+                value={form.firstName}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
-                required
+              />
+              <InputField
+                label="Last Name"
+                name="lastName"
+                placeholder="Doe"
+                value={form.lastName}
+                onChange={handleChange}
               />
             </div>
 
-            {/* Subject */}
-            <div>
-              <label htmlFor="subject" className="block mb-2 text-sm font-medium text-gray-700">
-                Subject
-              </label>
-              <input
-                id="subject"
-                name="subject"
-                type="text"
-                placeholder="Let us know how we can help you"
-                value={form.subject}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
-              />
-            </div>
+            <InputField
+              label="Your Email"
+              name="email"
+              type="email"
+              placeholder="name@company.com"
+              value={form.email}
+              onChange={handleChange}
+            />
 
-            {/* Message */}
+            <InputField
+              label="Subject"
+              name="subject"
+              placeholder="Let us know how we can help you"
+              value={form.subject}
+              onChange={handleChange}
+            />
+
             <div>
               <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-700">
                 Your Message
@@ -188,17 +160,42 @@ export default function Contact() {
               />
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 w-full rounded-lg bg-gradient-to-r from-emerald-500 to-indigo-600 px-6 py-3 text-center text-white font-semibold shadow-md hover:opacity-90 transition disabled:opacity-60"
+              className="mt-2 w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-indigo-600 px-6 py-3 text-white font-semibold shadow-md hover:opacity-90 transition disabled:opacity-60"
             >
-              {loading ? 'Sending...' : 'Send Message'}
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin w-4 h-4" /> Sending...
+                </>
+              ) : (
+                'Send Message'
+              )}
             </button>
           </form>
         </div>
       </div>
     </section>
+  );
+}
+
+function InputField({ label, name, value, onChange, type = 'text', placeholder }) {
+  return (
+    <div className="flex-1">
+      <label htmlFor={name} className="block mb-2 text-sm font-medium text-gray-700">
+        {label}
+      </label>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+        required
+      />
+    </div>
   );
 }

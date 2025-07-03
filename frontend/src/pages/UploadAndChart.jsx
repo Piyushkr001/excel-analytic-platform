@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FiUploadCloud, FiSave } from 'react-icons/fi';
+import { Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import {
   Chart,
   CategoryScale,
@@ -33,7 +35,7 @@ export default function UploadAndChart() {
   const [yField, setYField] = useState('');
   const [chartType, setChartType] = useState('line');
   const [saving, setSaving] = useState(false);
-  const [chartView, setChartView] = useState('2d'); // 👈 View toggle added
+  const [chartView, setChartView] = useState('2d');
 
   const columns = rows.length ? Object.keys(rows[0]) : [];
 
@@ -56,7 +58,7 @@ export default function UploadAndChart() {
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
   const handleUpload = async () => {
-    if (!file) return alert('Please select a file');
+    if (!file) return toast.error('Please select a file');
     const token = localStorage.getItem('token');
     const formData = new FormData();
     formData.append('excel', file);
@@ -78,18 +80,19 @@ export default function UploadAndChart() {
       setId(data.uploadId);
       setXField('');
       setYField('');
+      toast.success('Upload successful 🎉');
     } catch (err) {
       console.error('❌ Upload failed:', err);
-      alert(err.response?.data?.error || 'Upload failed');
+      toast.error(err.response?.data?.error || 'Upload failed');
     } finally {
       setLoading(false);
     }
   };
 
   const handleSaveChart = async () => {
-    if (!uploadId || !xField || !yField) return alert('Missing required fields');
+    if (!uploadId || !xField || !yField) return toast.error('Missing required fields');
     const token = localStorage.getItem('token');
-    if (!token) return alert('You must be logged in');
+    if (!token) return toast.error('You must be logged in');
 
     try {
       setSaving(true);
@@ -98,10 +101,10 @@ export default function UploadAndChart() {
         { uploadId, xField, yField, chartType },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert('Chart configuration saved ✔');
+      toast.success('Chart saved ✔');
     } catch (err) {
       console.error('❌ Save chart failed:', err.response?.data || err.message);
-      alert(err.response?.data?.error || 'Save failed');
+      toast.error(err.response?.data?.error || 'Save failed');
     } finally {
       setSaving(false);
     }
@@ -139,7 +142,7 @@ export default function UploadAndChart() {
               loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
             }`}
           >
-            <FiUploadCloud className="text-lg" />
+            {loading ? <Loader2 className="animate-spin" /> : <FiUploadCloud />}
             {loading ? 'Uploading…' : 'Upload'}
           </button>
         </div>
@@ -152,7 +155,6 @@ export default function UploadAndChart() {
           </div>
         )}
 
-        {/* ---------- Chart View Toggle ---------- */}
         {chartData && (
           <div className="flex items-center gap-4 mt-6">
             <label className="font-medium text-sm">View:</label>
@@ -167,7 +169,6 @@ export default function UploadAndChart() {
           </div>
         )}
 
-        {/* ---------- Chart ---------- */}
         {chartData && chartView === '2d' && (
           chartType === 'bar'
             ? <Bar data={chartData} options={{ responsive: true }} />
@@ -178,14 +179,14 @@ export default function UploadAndChart() {
           <ThreeBarChart data={rows} xField={xField} yField={yField} />
         )}
 
-        {/* ---------- Save Button ---------- */}
         {chartData && (
           <button
             onClick={handleSaveChart}
             disabled={saving}
             className="flex items-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition disabled:opacity-60"
           >
-            <FiSave /> {saving ? 'Saving…' : 'Save chart'}
+            {saving ? <Loader2 className="animate-spin" /> : <FiSave />}
+            {saving ? 'Saving…' : 'Save chart'}
           </button>
         )}
 
@@ -226,9 +227,7 @@ function RawTable({ rows }) {
         <thead>
           <tr className="bg-green-100 text-left">
             {cols.map((k) => (
-              <th key={k} className="px-4 py-2 border">
-                {k}
-              </th>
+              <th key={k} className="px-4 py-2 border">{k}</th>
             ))}
           </tr>
         </thead>

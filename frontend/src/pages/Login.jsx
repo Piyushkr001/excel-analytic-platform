@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
+import toast from 'react-hot-toast';
 
 import {
   Paper,
   TextField,
   Button,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 
 import LoginIcon from '@mui/icons-material/Login';
@@ -14,6 +16,7 @@ import LoginIcon from '@mui/icons-material/Login';
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,15 +24,23 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.email || !form.password) {
+      toast.error('Please fill in both fields');
+      return;
+    }
+
     try {
+      setLoading(true);
       const res = await login(form);
       localStorage.setItem('token', res.data.token);
-      alert('Login successful!');
+      toast.success('You Have Logged In Successfully 👏');
       navigate('/dashboard');
     } catch (err) {
-      console.error('Login error:', err);
-      const message = err?.response?.data?.error || 'Login failed. Server is Not Responding.';
-      alert(message);
+      const message = err?.response?.data?.error || 'Login failed. Server is not responding.';
+      toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,7 +63,10 @@ export default function Login() {
       <div className="flex items-center justify-center bg-white px-6 py-12">
         <div className="w-full max-w-md">
           <Paper elevation={4} sx={{ padding: 4, borderRadius: 4 }}>
-            <Typography variant="h5" sx={{ color: 'success.main', fontWeight: 'bold', textAlign: 'center', mb: 3 }}>
+            <Typography
+              variant="h5"
+              sx={{ color: 'success.main', fontWeight: 'bold', textAlign: 'center', mb: 3 }}
+            >
               Sign in to your account
             </Typography>
 
@@ -85,7 +99,8 @@ export default function Login() {
                 type="submit"
                 variant="contained"
                 fullWidth
-                startIcon={<LoginIcon />}
+                startIcon={!loading && <LoginIcon />}
+                disabled={loading}
                 sx={{
                   mt: 2,
                   backgroundColor: 'success.main',
@@ -95,9 +110,18 @@ export default function Login() {
                   fontSize: '1rem',
                 }}
               >
-                Login
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
               </Button>
             </form>
+
+            <Typography
+              variant="body2"
+              align="right"
+              sx={{ mt: 2, color: 'primary.main', cursor: 'pointer' }}
+              onClick={() => navigate('/forgot-password')}
+            >
+              Forgot Password?
+            </Typography>
 
             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
               Don&apos;t have an account?{' '}

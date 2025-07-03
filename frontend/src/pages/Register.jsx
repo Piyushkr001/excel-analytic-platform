@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../api/auth';
+import toast from 'react-hot-toast';
 
 import {
   Paper,
@@ -13,6 +14,7 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
+
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 export default function Register() {
@@ -24,14 +26,13 @@ export default function Register() {
     role: 'user',
   });
 
-  const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // 🔒 Redirect if user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      alert('You are already logged in!');
+      toast('You are already logged in!', { icon: '🔒' });
       navigate('/dashboard');
     }
   }, [navigate]);
@@ -47,13 +48,11 @@ export default function Register() {
     try {
       const res = await register(form);
       localStorage.setItem('token', res.data.token);
-      setIsRegistered(true);
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1000);
+      toast.success('🎉 Registration successful!');
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err) {
       console.error('🔴 Register error:', err.response?.data || err.message);
-      alert(err.response?.data?.error || 'Registration failed. Try again.');
+      toast.error(err.response?.data?.error || 'Registration failed. Try again.');
     } finally {
       setLoading(false);
     }
@@ -133,29 +132,21 @@ export default function Register() {
               </Select>
             </FormControl>
 
-            {!isRegistered && (
-              <Button
-                type="submit"
-                variant="contained"
-                startIcon={loading ? <CircularProgress size={20} /> : <PersonAddIcon />}
-                disabled={loading}
-                sx={{
-                  mt: 2,
-                  py: 1.2,
-                  fontWeight: 'bold',
-                  fontSize: '1rem',
-                }}
-                fullWidth
-              >
-                {loading ? 'Registering...' : 'Register'}
-              </Button>
-            )}
-
-            {isRegistered && (
-              <Typography align="center" color="green" fontWeight="bold" mt={2}>
-                ✅ Registration successful! Redirecting...
-              </Typography>
-            )}
+            <Button
+              type="submit"
+              variant="contained"
+              startIcon={loading ? <CircularProgress size={20} /> : <PersonAddIcon />}
+              disabled={loading}
+              sx={{
+                mt: 2,
+                py: 1.2,
+                fontWeight: 'bold',
+                fontSize: '1rem',
+              }}
+              fullWidth
+            >
+              {loading ? 'Registering...' : 'Register'}
+            </Button>
           </form>
 
           <Typography variant="body2" align="center" sx={{ mt: 3 }}>

@@ -1,6 +1,6 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -15,6 +15,9 @@ import PrivateRoute from './components/PrivateRoute';
 import Features from './pages/Features';
 import Contact from './pages/Contact';
 import UploadAndChart from './pages/UploadAndChart';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const navigate = useNavigate();
@@ -41,6 +44,7 @@ function App() {
   return (
     <>
       <Navbar />
+       <Toaster position="top-center" />
       <div className="pt-16 min-h-screen flex flex-col justify-between">
         <div className="flex-1">
           <Routes>
@@ -49,8 +53,11 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/features" element={<Features />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />        {/* ✅ new */}
+            <Route path="/reset-password/:token" element={<ResetPassword />} />   {/* ✅ new */}
 
-             <Route
+
+            <Route
               path="/dashboard"
               element={
                 <PrivateRoute>
@@ -62,7 +69,7 @@ function App() {
               <Route index element={<DashboardHome />} />
               <Route path="upload" element={<UploadAndChart />} />
               <Route path="history" element={<History />} />
-              <Route path="admin" element={<Admin />} /> 
+              <Route path="admin" element={<Admin />} />
             </Route>
           </Routes>
         </div>
