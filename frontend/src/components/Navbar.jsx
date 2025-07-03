@@ -39,6 +39,7 @@ export default function Navbar() {
             <Link to="/" className="text-gray-700 hover:text-green-600 transition">Home</Link>
             <Link to="/dashboard" className="text-gray-700 hover:text-green-600 transition">Dashboard</Link>
             <Link to="/features" className="text-gray-700 hover:text-green-600 transition">Features</Link>
+            <Link to="/about" className="text-gray-700 hover:text-green-600 transition">About Us</Link>
             <Link to="/contact" className="text-gray-700 hover:text-green-600 transition">Contact</Link>
 
             {!isAuthenticated ? (
