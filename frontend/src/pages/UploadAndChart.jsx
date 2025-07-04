@@ -60,17 +60,17 @@ export default function UploadAndChart() {
   const chartData =
     rows.length && xField && yField
       ? {
-          labels: rows.map((r) => r[xField]),
-          datasets: [
-            {
-              label: `${yField} vs ${xField}`,
-              data: rows.map((r) => Number(r[yField]) || 0),
-              borderWidth: 2,
-              borderColor: 'rgb(16,185,129)',
-              backgroundColor: 'rgba(16,185,129,0.35)',
-            },
-          ],
-        }
+        labels: rows.map((r) => r[xField]),
+        datasets: [
+          {
+            label: `${yField} vs ${xField}`,
+            data: rows.map((r) => Number(r[yField]) || 0),
+            borderWidth: 2,
+            borderColor: 'rgb(16,185,129)',
+            backgroundColor: 'rgba(16,185,129,0.35)',
+          },
+        ],
+      }
       : null;
 
   /* =========================================================
@@ -176,20 +176,28 @@ export default function UploadAndChart() {
   return (
     <section className="mx-auto max-w-7xl p-4 sm:p-6 bg-gradient-to-br from-green-50 via-white to-sky-50 min-h-screen">
       {/* Header */}
-      <header className="mb-10 grid gap-8 md:grid-cols-2 items-center">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-800">
-          Upload&nbsp;and&nbsp;
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-500">
-            Visualize
-          </span>
-          &nbsp;Excel&nbsp;Data
-        </h1>
-        <img
-          src="/src/assets/Images/Upload Illustration.png"
-          alt="illustration"
-          className="hidden md:block w-full max-w-sm mx-auto"
-        />
+      <header className="mb-10 flex flex-col-reverse lg:flex-row items-center gap-8">
+        {/* Text */}
+        <div className="text-center lg:text-left flex-1">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-800 leading-tight">
+            Upload&nbsp;and&nbsp;
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-500">
+              Visualize
+            </span>
+            &nbsp;Excel&nbsp;Data
+          </h1>
+        </div>
+
+        {/* Image */}
+        <div className="flex justify-center lg:justify-end flex-1">
+          <img
+            src="/src/assets/Images/Upload Illustration.png"
+            alt="illustration"
+            className="w-48 sm:w-64 lg:w-72 object-contain"
+          />
+        </div>
       </header>
+
 
       {/* Card */}
       <div className="bg-white border rounded-2xl shadow-xl p-6 space-y-6">
@@ -204,11 +212,10 @@ export default function UploadAndChart() {
           <button
             onClick={handleUpload}
             disabled={loading}
-            className={`flex items-center gap-2 px-6 py-2 text-sm font-semibold rounded text-white ${
-              loading
+            className={`flex items-center gap-2 px-6 py-2 text-sm font-semibold rounded text-white ${loading
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-green-600 hover:bg-green-700'
-            }`}
+              }`}
           >
             {loading ? <Loader2 className="animate-spin" /> : <FiUploadCloud />}
             {loading ? 'Uploading…' : 'Upload'}
