@@ -2,12 +2,7 @@
 import React, { useRef, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import {
-  FiUploadCloud,
-  FiSave,
-  FiDownload,
-  FiFileText,
-} from 'react-icons/fi';
+import { FiUploadCloud, FiSave, FiDownload, FiFileText } from 'react-icons/fi';
 import { Loader2 } from 'lucide-react';
 
 import html2canvas from 'html2canvas';
@@ -24,7 +19,10 @@ import {
   Legend,
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
+
 import ThreeBarChart from '../components/ThreeBarChart';
+import Dropdown from '../components/Dropdown';
+import RawTable from '../components/RawTable';
 
 /* ---------- Chart.js registration ---------- */
 Chart.register(
@@ -60,17 +58,17 @@ export default function UploadAndChart() {
   const chartData =
     rows.length && xField && yField
       ? {
-        labels: rows.map((r) => r[xField]),
-        datasets: [
-          {
-            label: `${yField} vs ${xField}`,
-            data: rows.map((r) => Number(r[yField]) || 0),
-            borderWidth: 2,
-            borderColor: 'rgb(16,185,129)',
-            backgroundColor: 'rgba(16,185,129,0.35)',
-          },
-        ],
-      }
+          labels: rows.map((r) => r[xField]),
+          datasets: [
+            {
+              label: `${yField} vs ${xField}`,
+              data: rows.map((r) => Number(r[yField]) || 0),
+              borderWidth: 2,
+              borderColor: 'rgb(16,185,129)',
+              backgroundColor: 'rgba(16,185,129,0.35)',
+            },
+          ],
+        }
       : null;
 
   /* =========================================================
@@ -198,7 +196,6 @@ export default function UploadAndChart() {
         </div>
       </header>
 
-
       {/* Card */}
       <div className="bg-white border rounded-2xl shadow-xl p-6 space-y-6">
         {/* upload */}
@@ -212,10 +209,9 @@ export default function UploadAndChart() {
           <button
             onClick={handleUpload}
             disabled={loading}
-            className={`flex items-center gap-2 px-6 py-2 text-sm font-semibold rounded text-white ${loading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-green-600 hover:bg-green-700'
-              }`}
+            className={`flex items-center gap-2 px-6 py-2 text-sm font-semibold rounded text-white ${
+              loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
+            }`}
           >
             {loading ? <Loader2 className="animate-spin" /> : <FiUploadCloud />}
             {loading ? 'Uploading…' : 'Upload'}
@@ -294,11 +290,7 @@ export default function UploadAndChart() {
                   disabled={exporting}
                   className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded disabled:opacity-60"
                 >
-                  {exporting ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <FiFileText />
-                  )}
+                  {exporting ? <Loader2 className="animate-spin" /> : <FiFileText />}
                   PDF
                 </button>
               </>
@@ -317,56 +309,5 @@ export default function UploadAndChart() {
         )}
       </div>
     </section>
-  );
-}
-
-/* =========================================================
-   Re-usable sub-components
-========================================================= */
-function Dropdown({ label, value, onChange, options }) {
-  return (
-    <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="border rounded px-3 py-2 text-sm"
-      >
-        <option value="">— choose —</option>
-        {options.map((opt) => (
-          <option key={opt}>{opt}</option>
-        ))}
-      </select>
-    </div>
-  );
-}
-
-function RawTable({ rows }) {
-  const cols = Object.keys(rows[0] || {});
-  return (
-    <div className="overflow-x-auto mt-4 border rounded">
-      <table className="min-w-full text-sm">
-        <thead className="bg-green-100">
-          <tr>
-            {cols.map((k) => (
-              <th key={k} className="px-4 py-2 border">
-                {k}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i} className={i % 2 ? 'bg-gray-50' : 'bg-white'}>
-              {cols.map((k) => (
-                <td key={k} className="px-4 py-2 border">
-                  {typeof row[k] === 'object' ? JSON.stringify(row[k]) : row[k]}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
   );
 }
