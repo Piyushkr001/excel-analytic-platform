@@ -12,8 +12,10 @@ export default function DashboardHome() {
         className="w-full max-w-md mb-10"
       />
       <h1 className="text-3xl font-bold text-gray-800">
-        Welcome to Excel Analytics Platform
+        Welcome to {' '} 
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-500">Xcellytics</span>
       </h1>
+      <p className="mt-1 text-xs text-gray-500">An Excel Analytic Platform</p>
 
       {isAuthenticated && (
         <>
