@@ -6,7 +6,9 @@ const userSchema = new mongoose.Schema(
     name:     { type: String, required: true },
     email:    { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role:     { type: String, default: 'user' },
+    role:     { type: String, default: 'user' },       // roles: 'user', 'admin'
+
+    isBlocked: { type: Boolean, default: false },       // ✅ NEW: for admin to block
 
     // 🔐 Password reset fields
     resetPasswordToken:  String,

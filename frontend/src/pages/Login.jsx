@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 
 import LoginIcon from '@mui/icons-material/Login';
+import { jwtDecode } from 'jwt-decode'; // ✅ FIXED: named import
 
 export default function Login() {
   const navigate = useNavigate();
@@ -33,9 +34,24 @@ export default function Login() {
     try {
       setLoading(true);
       const res = await login(form);
-      localStorage.setItem('token', res.data.token);
+      const token = res.data.token;
+
+      // Save token
+      localStorage.setItem('token', token);
+
+      // ✅ Decode to get role
+      const decoded = jwtDecode(token);
+      const role = decoded?.role;
+
       toast.success('You Have Logged In Successfully 👏');
-      navigate('/dashboard');
+
+      // ✅ Navigate based on role
+      if (role === 'admin') {
+        navigate('/dashboard/admin');
+      } else {
+        navigate('/dashboard');
+      }
+
     } catch (err) {
       const message = err?.response?.data?.error || 'Login failed. Server is not responding.';
       toast.error(message);

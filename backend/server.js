@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import excelRoutes from './routes/excelRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import chartRoutes from './routes/chartRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config(); 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/excel', excelRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/charts', chartRoutes);
+app.use("/api/admin", adminRoutes);
 
 // DB & Server
 const PORT = process.env.PORT || 8000;

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../api/auth';
 import toast from 'react-hot-toast';
+import { jwtDecode } from 'jwt-decode';
 
 import {
   Paper,
@@ -47,9 +48,22 @@ export default function Register() {
     setLoading(true);
     try {
       const res = await register(form);
-      localStorage.setItem('token', res.data.token);
+      const token = res.data.token;
+      localStorage.setItem('token', token);
+
+      const decoded = jwtDecode(token);
+      const role = decoded?.role;
+
       toast.success('🎉 Registration successful!');
-      setTimeout(() => navigate('/dashboard'), 1500);
+
+      // Role-based redirect
+      setTimeout(() => {
+        if (role === 'admin') {
+          navigate('/dashboard/admin');
+        } else {
+          navigate('/dashboard');
+        }
+      }, 1500);
     } catch (err) {
       console.error('🔴 Register error:', err.response?.data || err.message);
       toast.error(err.response?.data?.error || 'Registration failed. Try again.');
