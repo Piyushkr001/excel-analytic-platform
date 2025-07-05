@@ -44,21 +44,43 @@ export default function AboutUs() {
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">Meet the Team</h2>
         <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
           {[
-            { name: 'Piyush Kumar', role: 'Web Developer (Full Stack)', img: '/src/assets/Images/team1.png' },
-            { name: 'Rajashree', role: 'Frontend Developer', img: '/src/assets/Images/team2.png' },
-            { name: 'Jayanth', role: 'Frontend Developer', img: '/src/assets/Images/team3.png' },
-          ].map(({ name, role, img }) => (
+            {
+              name: 'Piyush Kumar',
+              role: 'Web Developer (Full Stack)',
+              img: '/src/assets/Images/team1.png',
+              email: 'piyushthegreat2305@gmail.com',
+            },
+            {
+              name: 'Rajashree',
+              role: 'Frontend Developer',
+              img: '/src/assets/Images/team2.png',
+              email: 'rajashree@example.com',
+            },
+            {
+              name: 'Jayanth',
+              role: 'Frontend Developer',
+              img: '/src/assets/Images/team3.png',
+              email: 'jayanth@example.com',
+            },
+          ].map(({ name, role, img, email }) => (
             <div
               key={name}
               className="flex flex-col items-center bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform duration-300 hover:scale-105"
             >
               <img src={img} alt={name} className="w-24 h-24 rounded-full object-cover mb-4 shadow-sm" />
               <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
-              <p className="text-sm text-gray-500">{role}</p>
+              <p className="text-sm text-gray-500 mb-4">{role}</p>
+              <a
+                href={`mailto:${email}`}
+                className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm transition"
+              >
+                <button className='cursor-pointer'> Contact Me </button>
+              </a>
             </div>
           ))}
         </div>
       </div>
+
 
       {/* CTA */}
       <div className="text-center mt-24">
