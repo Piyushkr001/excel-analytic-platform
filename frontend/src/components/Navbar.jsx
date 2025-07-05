@@ -2,21 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
+import { jwtDecode } from 'jwt-decode'; // ✅ Correct named import
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false); // ✅ New state
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
+
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setIsAdmin(decoded?.role === 'admin');
+      } catch (err) {
+        console.error("Token decode failed:", err);
+        setIsAdmin(false);
+      }
+    }
   }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
+    setIsAdmin(false);
     navigate('/login');
   };
 
@@ -28,7 +41,7 @@ export default function Navbar() {
           {/* ✅ Fixed Logo */}
           <Link to="/" className="flex items-center gap-2">
             <img
-              src="/src/assets/Logo/logo.svg" // <- Ensure this file is in your /public directory
+              src="/src/assets/Logo/logo.svg"
               alt="Xcellytics Logo"
               className="h-10 w-auto"
             />
@@ -37,7 +50,17 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-6 items-center">
             <Link to="/" className="text-gray-700 hover:text-green-600 transition">Home</Link>
-            <Link to="/dashboard" className="text-gray-700 hover:text-green-600 transition">Dashboard</Link>
+
+            {/* ✅ Conditional Dashboard Link */}
+            {isAuthenticated && (
+              <Link
+                to={isAdmin ? '/dashboard/admin' : '/dashboard'}
+                className="text-gray-700 hover:text-green-600 transition"
+              >
+                Dashboard
+              </Link>
+            )}
+
             <Link to="/features" className="text-gray-700 hover:text-green-600 transition">Features</Link>
             <Link to="/about" className="text-gray-700 hover:text-green-600 transition">About Us</Link>
             <Link to="/contact" className="text-gray-700 hover:text-green-600 transition">Contact</Link>
@@ -76,7 +99,17 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-white px-4 pt-2 pb-4 shadow-md space-y-2">
           <Link to="/" className="block text-gray-700 hover:text-green-600">Home</Link>
-          <Link to="/dashboard" className="block text-gray-700 hover:text-green-600">Dashboard</Link>
+
+          {/* ✅ Conditional Dashboard Link */}
+          {isAuthenticated && (
+            <Link
+              to={isAdmin ? '/dashboard/admin' : '/dashboard'}
+              className="block text-gray-700 hover:text-green-600"
+            >
+              Dashboard
+            </Link>
+          )}
+
           <Link to="/features" className="block text-gray-700 hover:text-green-600">Features</Link>
           <Link to="/contact" className="block text-gray-700 hover:text-green-600">Contact</Link>
 

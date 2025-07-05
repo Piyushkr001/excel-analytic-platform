@@ -3,13 +3,15 @@ import { NavLink } from 'react-router-dom';
 import { FiHome, FiUpload, FiClock, FiShield } from 'react-icons/fi';
 
 const menuItems = [
-  { text: 'Dashboard', path: '/dashboard', icon: <FiHome /> },
-  { text: 'Upload File', path: '/dashboard/upload', icon: <FiUpload /> },
-  { text: 'History', path: '/dashboard/history', icon: <FiClock /> },
+  { text: 'Dashboard', path: '/dashboard', icon: <FiHome />, role: 'user' },
+  { text: 'Upload File', path: '/dashboard/upload', icon: <FiUpload />, role: 'user' },
+  { text: 'History', path: '/dashboard/history', icon: <FiClock />, role: 'user' },
   { text: 'Admin Panel', path: '/dashboard/admin', icon: <FiShield />, role: 'admin' },
 ];
 
 const Sidebar = ({ role, sidebarOpen, setSidebarOpen }) => {
+  const filteredItems = menuItems.filter(item => item.role === role);
+
   return (
     <>
       {/* Mobile Sidebar Overlay */}
@@ -28,34 +30,32 @@ const Sidebar = ({ role, sidebarOpen, setSidebarOpen }) => {
       >
         <div className="p-4 font-bold text-xl text-green-600 border-b">
           <img
-              src="/src/assets/Logo/logo.svg" // <- Ensure this file is in your /public directory
-              alt="Xcellytics Logo"
-              className="h-10 w-auto"
-            />
+            src="/src/assets/Logo/logo.svg"
+            alt="Xcellytics Logo"
+            className="h-10 w-auto"
+          />
         </div>
         <nav className="p-4">
           <ul className="space-y-2">
-            {menuItems
-              .filter(item => !item.role || item.role === role)
-              .map(({ text, path, icon }) => (
-                <li key={text}>
-                  <NavLink
-                    to={path}
-                    end={path === '/dashboard'} // ✅ only exact match activates 'Dashboard'
-                    onClick={() => setSidebarOpen(false)}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 px-4 py-2 rounded text-gray-700 transition ${
-                        isActive
-                          ? 'bg-green-200 font-semibold text-green-700'
-                          : 'hover:bg-gray-100'
-                      }`
-                    }
-                  >
-                    <span className="text-lg">{icon}</span>
-                    <span>{text}</span>
-                  </NavLink>
-                </li>
-              ))}
+            {filteredItems.map(({ text, path, icon }) => (
+              <li key={text}>
+                <NavLink
+                  to={path}
+                  end={path === '/dashboard'}
+                  onClick={() => setSidebarOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-4 py-2 rounded text-gray-700 transition ${
+                      isActive
+                        ? 'bg-green-200 font-semibold text-green-700'
+                        : 'hover:bg-gray-100'
+                    }`
+                  }
+                >
+                  <span className="text-lg">{icon}</span>
+                  <span>{text}</span>
+                </NavLink>
+              </li>
+            ))}
           </ul>
         </nav>
       </div>
