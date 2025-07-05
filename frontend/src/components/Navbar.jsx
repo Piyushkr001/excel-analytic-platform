@@ -30,7 +30,7 @@ export default function Navbar() {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
     setIsAdmin(false);
-    navigate('/login');
+    navigate('/');
   };
 
   return (
