@@ -27,7 +27,7 @@ export default function DashboardHome() {
         className="w-full max-w-md mb-10"
       />
       <h1 className="text-3xl font-bold text-gray-800">
-        {role === "admin" ? "Welcome Admin to" : "Welcome to"}{" "}
+        Welcome to{" "}
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-500">
           Xcellytics
         </span>
