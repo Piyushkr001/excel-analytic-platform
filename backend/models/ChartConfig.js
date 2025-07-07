@@ -6,7 +6,19 @@ const chartConfigSchema = new mongoose.Schema(
     userId:    { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     xField:    { type: String, required: true },
     yField:    { type: String, required: true },
-    chartType: { type: String, enum: ['line', 'bar'], default: 'line' },
+    chartType: {
+      type: String,
+      enum: [
+        'line',
+        'area',
+        'bar',
+        'pie',
+        'doughnut',
+        'scatter',
+        'bubble',
+      ],
+      default: 'line',
+    },
   },
   { timestamps: true }
 );

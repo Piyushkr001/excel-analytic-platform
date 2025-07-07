@@ -1,42 +1,60 @@
-/* eslint-disable no-unused-vars */
 import React, { useRef, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { FiUploadCloud, FiSave, FiDownload, FiFileText } from 'react-icons/fi';
 import { Loader2 } from 'lucide-react';
+import { FiUploadCloud, FiSave, FiDownload, FiFileText } from 'react-icons/fi';
 
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
+/* ───────────────────────────
+ * Chart.js core
+ * ─────────────────────────── */
 import {
   Chart,
   CategoryScale,
   LinearScale,
+  TimeScale,
   PointElement,
   LineElement,
   BarElement,
+  ArcElement,
+  Filler,
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line, Bar } from 'react-chartjs-2';
 
-import ThreeBarChart from '../components/ThreeBarChart';
-import Dropdown from '../components/Dropdown';
-import RawTable from '../components/RawTable';
+import {
+  Bar,
+  Line,
+  Pie,
+  Doughnut,
+  Scatter,
+  Bubble,
+} from 'react-chartjs-2';
 
-/* ---------- Chart.js registration ---------- */
 Chart.register(
   CategoryScale,
   LinearScale,
+  TimeScale,
   PointElement,
   LineElement,
   BarElement,
+  ArcElement,
+  Filler,
   Tooltip,
   Legend
 );
 
+/* ───────────────────────────
+ * Local reusable comps
+ * ─────────────────────────── */
+import ThreeBarChart from '../components/ThreeBarChart';
+import Dropdown from '../components/Dropdown';
+import RawTable from '../components/RawTable';
+
+/* ════════════════════════════════════════════════ */
 export default function UploadAndChart() {
-  /* ----- state ----- */
   const [file, setFile] = useState(null);
   const [rows, setRows] = useState([]);
   const [uploadId, setUploadId] = useState(null);
@@ -50,33 +68,81 @@ export default function UploadAndChart() {
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
 
-  /* ----- refs ----- */
-  const chartRef = useRef(null); // for PNG / PDF export
+  const chartRef = useRef(null);
+  const token = localStorage.getItem('token');
 
-  /* ----- derived ----- */
   const columns = rows.length ? Object.keys(rows[0]) : [];
-  const chartData =
-    rows.length && xField && yField
-      ? {
-          labels: rows.map((r) => r[xField]),
+
+  const buildChartData = () => {
+    if (!rows.length || !xField || !yField) return null;
+
+    const labels = rows.map((r) => r[xField]);
+    const yVals = rows.map((r) => Number(r[yField]) || 0);
+
+    switch (chartType) {
+      case 'pie':
+      case 'doughnut':
+        return {
+          labels,
+          datasets: [
+            {
+              data: yVals,
+              backgroundColor: labels.map(
+                (_, i) => `hsl(${(i * 47) % 360} 70% 55%)`
+              ),
+            },
+          ],
+        };
+      case 'scatter':
+        return {
           datasets: [
             {
               label: `${yField} vs ${xField}`,
-              data: rows.map((r) => Number(r[yField]) || 0),
-              borderWidth: 2,
-              borderColor: 'rgb(16,185,129)',
-              backgroundColor: 'rgba(16,185,129,0.35)',
+              data: rows.map((r) => ({
+                x: Number(r[xField]),
+                y: Number(r[yField]),
+              })),
+              backgroundColor: 'rgb(16,185,129)',
             },
           ],
-        }
-      : null;
+        };
+      case 'bubble':
+        return {
+          datasets: [
+            {
+              label: `${yField} vs ${xField}`,
+              data: rows.map((r) => ({
+                x: Number(r[xField]),
+                y: Number(r[yField]),
+                r: 6 + Math.random() * 6,
+              })),
+              backgroundColor: 'rgba(16,185,129,0.5)',
+            },
+          ],
+        };
+      default:
+        return {
+          labels,
+          datasets: [
+            {
+              label: `${yField} vs ${xField}`,
+              data: yVals,
+              fill: chartType === 'area',
+              borderColor: 'rgb(16,185,129)',
+              backgroundColor:
+                chartType === 'area'
+                  ? 'rgba(16,185,129,0.35)'
+                  : 'rgba(16,185,129,0.6)',
+            },
+          ],
+        };
+    }
+  };
 
-  /* =========================================================
-     Upload Excel
-  ========================================================= */
+  const chartData = buildChartData();
+
   const handleUpload = async () => {
     if (!file) return toast.error('Please select a file');
-    const token = localStorage.getItem('token');
     if (!token) return toast.error('Please login');
 
     const formData = new FormData();
@@ -87,14 +153,8 @@ export default function UploadAndChart() {
       const { data } = await axios.post(
         'http://localhost:8000/api/excel/upload',
         formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setRows(data.data);
       setUploadId(data.uploadId ?? data.data[0]?.uploadId);
       setXField('');
@@ -107,14 +167,9 @@ export default function UploadAndChart() {
     }
   };
 
-  /* =========================================================
-     Save chart configuration
-  ========================================================= */
   const handleSaveChart = async () => {
     if (!uploadId || !xField || !yField)
       return toast.error('Choose X & Y columns first');
-
-    const token = localStorage.getItem('token');
     if (!token) return toast.error('Please login');
 
     try {
@@ -132,9 +187,6 @@ export default function UploadAndChart() {
     }
   };
 
-  /* =========================================================
-     PNG export
-  ========================================================= */
   const exportPNG = () => {
     if (!chartRef.current) return;
     const url = chartRef.current.toBase64Image();
@@ -144,16 +196,12 @@ export default function UploadAndChart() {
     a.click();
   };
 
-  /* =========================================================
-     PDF export
-  ========================================================= */
   const exportPDF = async () => {
     if (!chartRef.current) return;
     try {
       setExporting(true);
       const canvas = await html2canvas(chartRef.current.canvas);
       const img = canvas.toDataURL('image/png');
-
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'px',
@@ -161,21 +209,44 @@ export default function UploadAndChart() {
       });
       pdf.addImage(img, 'PNG', 0, 0, canvas.width, canvas.height);
       pdf.save('chart.pdf');
-    } catch (e) {
+    } catch {
       toast.error('PDF export failed');
     } finally {
       setExporting(false);
     }
   };
 
-  /* =========================================================
-     UI
-  ========================================================= */
+  const render2DChart = () => {
+    if (!chartData) return null;
+
+    switch (chartType) {
+      case 'bar':
+        return (
+          <Bar
+            ref={chartRef}
+            data={chartData}
+            options={{ indexAxis: 'x', responsive: true }}
+          />
+        );
+      case 'line':
+      case 'area':
+        return <Line ref={chartRef} data={chartData} options={{ responsive: true }} />;
+      case 'pie':
+        return <Pie ref={chartRef} data={chartData} />;
+      case 'doughnut':
+        return <Doughnut ref={chartRef} data={chartData} />;
+      case 'scatter':
+        return <Scatter ref={chartRef} data={chartData} />;
+      case 'bubble':
+        return <Bubble ref={chartRef} data={chartData} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <section className="mx-auto max-w-7xl p-4 sm:p-6 bg-gradient-to-br from-green-50 via-white to-sky-50 min-h-screen">
-      {/* Header */}
       <header className="mb-10 flex flex-col-reverse lg:flex-row items-center gap-8">
-        {/* Text */}
         <div className="text-center lg:text-left flex-1">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-800 leading-tight">
             Upload&nbsp;and&nbsp;
@@ -185,8 +256,6 @@ export default function UploadAndChart() {
             &nbsp;Excel&nbsp;Data
           </h1>
         </div>
-
-        {/* Image */}
         <div className="flex justify-center lg:justify-end flex-1">
           <img
             src="/src/assets/Images/Upload Illustration.png"
@@ -196,9 +265,7 @@ export default function UploadAndChart() {
         </div>
       </header>
 
-      {/* Card */}
       <div className="bg-white border rounded-2xl shadow-xl p-6 space-y-6">
-        {/* upload */}
         <div className="flex flex-col sm:flex-row gap-4">
           <input
             type="file"
@@ -209,16 +276,16 @@ export default function UploadAndChart() {
           <button
             onClick={handleUpload}
             disabled={loading}
-            className={`flex items-center gap-2 px-6 py-2 text-sm font-semibold rounded text-white ${
-              loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
-            }`}
+            className={`flex items-center gap-2 px-6 py-2 text-sm font-semibold rounded text-white ${loading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-green-600 hover:bg-green-700'
+              }`}
           >
             {loading ? <Loader2 className="animate-spin" /> : <FiUploadCloud />}
             {loading ? 'Uploading…' : 'Upload'}
           </button>
         </div>
 
-        {/* selectors */}
         {rows.length > 0 && (
           <div className="grid gap-4 md:grid-cols-3">
             <Dropdown label="X-Axis" value={xField} onChange={setXField} options={columns} />
@@ -227,12 +294,19 @@ export default function UploadAndChart() {
               label="Chart type"
               value={chartType}
               onChange={setChartType}
-              options={['line', 'bar']}
+              options={[
+                'line',
+                'area',
+                'bar',
+                'pie',
+                'doughnut',
+                'scatter',
+                'bubble',
+              ]}
             />
           </div>
         )}
 
-        {/* view toggle */}
         {chartData && (
           <div className="flex items-center gap-3 flex-wrap">
             <label className="font-medium text-sm">View:</label>
@@ -241,21 +315,14 @@ export default function UploadAndChart() {
               onChange={(e) => setChartView(e.target.value)}
               className="border rounded px-2 py-1 text-sm"
             >
-              <option value="2d">2-D Chart.js</option>
-              <option value="3d">3-D Three.js</option>
+              <option value="2d">2-D (Chart.js)</option>
+              <option value="3d">3-D (Three.js)</option>
             </select>
           </div>
         )}
 
-        {/* chart */}
         {chartData && chartView === '2d' && (
-          <div className="w-full overflow-x-auto">
-            {chartType === 'bar' ? (
-              <Bar ref={chartRef} data={chartData} options={{ responsive: true }} />
-            ) : (
-              <Line ref={chartRef} data={chartData} options={{ responsive: true }} />
-            )}
-          </div>
+          <div className="w-full overflow-x-auto">{render2DChart()}</div>
         )}
 
         {chartView === '3d' && xField && yField && (
@@ -264,7 +331,6 @@ export default function UploadAndChart() {
           </div>
         )}
 
-        {/* action buttons */}
         {chartData && (
           <div className="flex flex-wrap gap-3">
             <button
@@ -276,7 +342,6 @@ export default function UploadAndChart() {
               {saving ? 'Saving…' : 'Save chart'}
             </button>
 
-            {/* export buttons only for 2-D */}
             {chartView === '2d' && (
               <>
                 <button
@@ -298,7 +363,6 @@ export default function UploadAndChart() {
           </div>
         )}
 
-        {/* raw table */}
         {rows.length > 0 && (
           <details className="mt-6">
             <summary className="cursor-pointer text-sm text-gray-600">
