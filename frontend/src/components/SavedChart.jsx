@@ -1,32 +1,13 @@
+// src/pages/SavedCharts.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Line, Bar } from 'react-chartjs-2';
-import {
-  Chart,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-Chart.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Tooltip,
-  Legend
-);
+import ChartWrapper from '../components/ChartWrapper';
 
 export default function SavedCharts() {
   const [charts, setCharts] = useState([]);
 
   useEffect(() => {
-    const fetchCharts = async () => {
+    (async () => {
       try {
         const token = localStorage.getItem('token');
         const { data } = await axios.get('http://localhost:8000/api/charts', {
@@ -36,9 +17,7 @@ export default function SavedCharts() {
       } catch (err) {
         console.error('Failed to fetch charts:', err);
       }
-    };
-
-    fetchCharts();
+    })();
   }, []);
 
   if (!charts.length) {
@@ -60,30 +39,91 @@ export default function SavedCharts() {
           const labels = chart.data.map((row) => row[chart.xField]);
           const values = chart.data.map((row) => Number(row[chart.yField]) || 0);
 
-          const chartData = {
-            labels,
-            datasets: [
-              {
-                label: `${chart.yField} vs ${chart.xField}`,
-                data: values,
-                backgroundColor: 'rgba(59,130,246,0.35)',
-                borderColor: 'rgb(59,130,246)',
-                borderWidth: 2,
-              },
-            ],
-          };
+          const chartData =
+            chart.chartType === 'scatter'
+              ? {
+                  datasets: [
+                    {
+                      label: `${chart.yField} vs ${chart.xField}`,
+                      data: chart.data.map((row) => ({
+                        x: Number(row[chart.xField]) || 0,
+                        y: Number(row[chart.yField]) || 0,
+                      })),
+                      backgroundColor: 'rgba(59,130,246,0.6)',
+                    },
+                  ],
+                }
+              : chart.chartType === 'bubble'
+              ? {
+                  datasets: [
+                    {
+                      label: `${chart.yField} vs ${chart.xField}`,
+                      data: chart.data.map((row) => ({
+                        x: Number(row[chart.xField]) || 0,
+                        y: Number(row[chart.yField]) || 0,
+                        r: Number(row.radius) || 5, // assume 'radius' field exists or fallback
+                      })),
+                      backgroundColor: 'rgba(59,130,246,0.6)',
+                    },
+                  ],
+                }
+              : chart.chartType === 'pie' || chart.chartType === 'doughnut'
+              ? {
+                  labels,
+                  datasets: [
+                    {
+                      label: chart.yField,
+                      data: values,
+                      backgroundColor: [
+                        '#60A5FA', '#F59E0B', '#10B981', '#EF4444', '#8B5CF6',
+                        '#3B82F6', '#F472B6', '#34D399', '#F87171', '#A78BFA',
+                      ],
+                      borderWidth: 1,
+                    },
+                  ],
+                }
+              : {
+                  labels,
+                  datasets: [
+                    {
+                      label: `${chart.yField} vs ${chart.xField}`,
+                      data: values,
+                      backgroundColor:
+                        chart.chartType === 'bar'
+                          ? 'rgba(59,130,246,0.35)'
+                          : 'rgba(59,130,246,0.15)',
+                      borderColor: 'rgb(59,130,246)',
+                      borderWidth: 2,
+                      fill: chart.chartType === 'area',
+                      tension: 0.3,
+                    },
+                  ],
+                };
 
-          const commonOptions = {
+          const options = {
             responsive: true,
-            maintainAspectRatio: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { ticks: { font: { size: 10 } } } },
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: true },
+              title: { display: false },
+            },
+            scales:
+              ['scatter', 'line', 'bar', 'area', 'bubble'].includes(chart.chartType)
+                ? {
+                    x: { ticks: { font: { size: 10 } } },
+                    y: { ticks: { font: { size: 10 } } },
+                  }
+                : undefined,
+            elements:
+              chart.chartType === 'line' || chart.chartType === 'area'
+                ? { point: { radius: 3 }, line: { fill: chart.chartType === 'area' } }
+                : {},
           };
 
           return (
             <article
               key={chart._id}
-              className="flex w-full flex-col overflow-hidden rounded-xl border border-gray-300 bg-white shadow hover:border-gray-400 transition-all"
+              className="flex w-full flex-col overflow-hidden rounded-xl border border-gray-300 bg-white shadow transition-all hover:border-gray-400"
             >
               <header className="px-4 pt-4 text-sm font-medium">
                 {chart.chartType.toUpperCase()} · {chart.xField} vs {chart.yField}
@@ -91,17 +131,12 @@ export default function SavedCharts() {
 
               <div className="relative w-full grow">
                 <div className="aspect-[4/3]">
-                  {chart.chartType === 'bar' ? (
-                    <Bar data={chartData} options={commonOptions} />
-                  ) : (
-                    <Line
-                      data={chartData}
-                      options={{
-                        ...commonOptions,
-                        elements: { point: { radius: 2 } },
-                      }}
-                    />
-                  )}
+                  <ChartWrapper
+                    id={`chart-${chart._id}`}
+                    type={chart.chartType}
+                    data={chartData}
+                    options={options}
+                  />
                 </div>
               </div>
             </article>
