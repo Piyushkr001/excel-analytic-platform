@@ -10,6 +10,9 @@ const userSchema = new mongoose.Schema(
 
     isBlocked: { type: Boolean, default: false },       // ✅ NEW: for admin to block
 
+    image: { type: String, default: '' },
+
+
 
     // 🔐 Password reset fields
     resetPasswordToken:  String,
