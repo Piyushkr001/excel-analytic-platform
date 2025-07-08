@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FiClock } from 'react-icons/fi';
+import { Loader2 } from 'lucide-react';
 
 export default function History() {
   const [groupedRecords, setGroupedRecords] = useState({});
@@ -48,7 +49,7 @@ export default function History() {
         </h2>
 
         {loading ? (
-          <p>Loading...</p>
+          <p className='flex items-center justify-center gap-4'><Loader2 className='animate-spin'/>Loading...</p>
         ) : Object.keys(groupedRecords).length === 0 ? (
           <p className="text-gray-500">No upload history found.</p>
         ) : (
