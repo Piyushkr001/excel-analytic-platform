@@ -19,6 +19,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import { Toaster } from 'react-hot-toast';
 import AboutUs from './pages/AboutUs';
+import Profile from './pages/Profile';
 
 function App() {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ function App() {
               {/* ✅ Nested routes inside Dashboard layout */}
               <Route index element={<DashboardHome />} />
               <Route path="upload" element={<UploadAndChart />} />
+              <Route path="profile" element={<Profile />} />
               <Route path="history" element={<History />} />
               <Route path="admin" element={<Admin />} />
             </Route>

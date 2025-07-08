@@ -1,11 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FiHome, FiUpload, FiClock, FiShield } from 'react-icons/fi';
+import { User2 } from 'lucide-react';
 
 const menuItems = [
   { text: 'Dashboard', path: '/dashboard', icon: <FiHome />, role: 'user' },
   { text: 'Upload File', path: '/dashboard/upload', icon: <FiUpload />, role: 'user' },
   { text: 'History', path: '/dashboard/history', icon: <FiClock />, role: 'user' },
+  { text: 'Profile', path: '/dashboard/profile', icon: <User2 />, role: 'user'},
   { text: 'Admin Panel', path: '/dashboard/admin', icon: <FiShield />, role: 'admin' },
 ];
 

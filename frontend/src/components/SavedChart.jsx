@@ -1,11 +1,15 @@
-// src/pages/SavedCharts.jsx
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ChartWrapper from '../components/ChartWrapper';
+import jsPDF from 'jspdf';
+import toast from 'react-hot-toast';
+import { FiDownload, FiFileText } from 'react-icons/fi'; // icons
 
 export default function SavedCharts() {
   const [charts, setCharts] = useState([]);
+  const chartRefs = useRef({}); // map<chartId, ChartJS>
 
+  /* fetch once */
   useEffect(() => {
     (async () => {
       try {
@@ -19,6 +23,44 @@ export default function SavedCharts() {
       }
     })();
   }, []);
+
+  /* helper to persist each child ref */
+  const attachRef = (id) => (instance) => {
+    if (instance) chartRefs.current[id] = instance;
+  };
+
+  /* ---------- download helpers ---------- */
+
+  const downloadPNG = (id, fileName) => {
+    const chart = chartRefs.current[id];
+    if (!chart) return toast.error('Chart not ready');
+    const link = document.createElement('a');
+    link.href = chart.toBase64Image('image/png', 1);
+    link.download = `${fileName}.png`;
+    link.click();
+  };
+
+  const downloadPDF = (id, meta) => {
+    const chart = chartRefs.current[id];
+    if (!chart) return toast.error('Chart not ready');
+
+    const imgData = chart.toBase64Image('image/png', 1);
+    const { width, height } = chart;
+    const pdf = new jsPDF({
+      orientation: width > height ? 'landscape' : 'portrait',
+      unit: 'pt',
+      format: [width + 80, height + 160], // leave room for header
+    });
+
+    pdf.setFontSize(14);
+    pdf.text(`Chart Type : ${meta.chartType.toUpperCase()}`, 40, 30);
+    pdf.text(`X-Axis     : ${meta.xField}`, 40, 50);
+    pdf.text(`Y-Axis     : ${meta.yField}`, 40, 70);
+    pdf.addImage(imgData, 'PNG', 40, 100, width, height);
+    pdf.save(`${meta.chartType}-${meta.xField}-vs-${meta.yField}.pdf`);
+  };
+
+  /* ---------- render ---------- */
 
   if (!charts.length) {
     return (
@@ -36,8 +78,9 @@ export default function SavedCharts() {
 
       <div className="mx-auto mb-10 grid max-w-7xl gap-6 px-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
         {charts.map((chart) => {
-          const labels = chart.data.map((row) => row[chart.xField]);
-          const values = chart.data.map((row) => Number(row[chart.yField]) || 0);
+          /* ---------- build data + options exactly as before ---------- */
+          const labels = chart.data.map((r) => r[chart.xField]);
+          const values = chart.data.map((r) => Number(r[chart.yField]) || 0);
 
           const chartData =
             chart.chartType === 'scatter'
@@ -45,9 +88,9 @@ export default function SavedCharts() {
                   datasets: [
                     {
                       label: `${chart.yField} vs ${chart.xField}`,
-                      data: chart.data.map((row) => ({
-                        x: Number(row[chart.xField]) || 0,
-                        y: Number(row[chart.yField]) || 0,
+                      data: chart.data.map((r) => ({
+                        x: Number(r[chart.xField]) || 0,
+                        y: Number(r[chart.yField]) || 0,
                       })),
                       backgroundColor: 'rgba(59,130,246,0.6)',
                     },
@@ -58,10 +101,10 @@ export default function SavedCharts() {
                   datasets: [
                     {
                       label: `${chart.yField} vs ${chart.xField}`,
-                      data: chart.data.map((row) => ({
-                        x: Number(row[chart.xField]) || 0,
-                        y: Number(row[chart.yField]) || 0,
-                        r: Number(row.radius) || 5, // assume 'radius' field exists or fallback
+                      data: chart.data.map((r) => ({
+                        x: Number(r[chart.xField]) || 0,
+                        y: Number(r[chart.yField]) || 0,
+                        r: Number(r.radius) || 5,
                       })),
                       backgroundColor: 'rgba(59,130,246,0.6)',
                     },
@@ -103,10 +146,7 @@ export default function SavedCharts() {
           const options = {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-              legend: { display: true },
-              title: { display: false },
-            },
+            plugins: { legend: { display: true }, title: { display: false } },
             scales:
               ['scatter', 'line', 'bar', 'area', 'bubble'].includes(chart.chartType)
                 ? {
@@ -125,10 +165,36 @@ export default function SavedCharts() {
               key={chart._id}
               className="flex w-full flex-col overflow-hidden rounded-xl border border-gray-300 bg-white shadow transition-all hover:border-gray-400"
             >
-              <header className="px-4 pt-4 text-sm font-medium">
-                {chart.chartType.toUpperCase()} · {chart.xField} vs {chart.yField}
+              {/* header + action icons */}
+              <header className="flex items-center justify-between px-4 pt-4 text-sm font-medium">
+                <span>
+                  {chart.chartType.toUpperCase()} · {chart.xField} vs {chart.yField}
+                </span>
+
+                <div className="flex gap-2">
+                  {/* PNG */}
+                  <button
+                    title="Download PNG"
+                    className="rounded-md p-1 hover:bg-gray-100"
+                    onClick={() =>
+                      downloadPNG(chart._id, `${chart.xField}-${chart.yField}`)
+                    }
+                  >
+                    <FiDownload className="h-4 w-4" />
+                  </button>
+
+                  {/* PDF */}
+                  <button
+                    title="Download PDF"
+                    className="rounded-md p-1 hover:bg-gray-100"
+                    onClick={() => downloadPDF(chart._id, chart)}
+                  >
+                    <FiFileText className="h-4 w-4" />
+                  </button>
+                </div>
               </header>
 
+              {/* the chart */}
               <div className="relative w-full grow">
                 <div className="aspect-[4/3]">
                   <ChartWrapper
@@ -136,6 +202,7 @@ export default function SavedCharts() {
                     type={chart.chartType}
                     data={chartData}
                     options={options}
+                    onChartReady={attachRef(chart._id)}
                   />
                 </div>
               </div>
