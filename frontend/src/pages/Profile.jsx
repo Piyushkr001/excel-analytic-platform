@@ -98,7 +98,7 @@ export default function Profile() {
         <h1 className="text-2xl font-bold text-blue-700">Profile Settings</h1>
         <button
           onClick={() => navigate('/dashboard')}
-          className="bg-gray-100 text-sm text-blue-600 px-3 py-1 rounded border border-blue-200 hover:bg-blue-50 transition"
+          className="bg-gray-100 text-sm text-blue-600 cursor-pointer px-3 py-1 rounded border border-blue-200 hover:bg-blue-50 transition"
         >
           Go to Dashboard
         </button>
@@ -160,7 +160,7 @@ export default function Profile() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition flex items-center justify-center"
+          className="bg-blue-600 text-white px-4 py-2 cursor-pointer rounded hover:bg-blue-700 transition flex items-center justify-center"
         >
           {saving && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
           {saving ? 'Saving…' : 'Save Changes'}
