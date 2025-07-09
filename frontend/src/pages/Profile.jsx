@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Loader2 } from 'lucide-react';
+import { ArrowRightCircle, Loader2 } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 const STATIC = import.meta.env.VITE_STATIC_URL || 'http://localhost:8000';
@@ -93,9 +93,9 @@ export default function Profile() {
         </h1>
         <button
           onClick={() => navigate('/dashboard')}
-          className="text-sm bg-blue-100 text-blue-700 px-4 py-1.5 rounded-md border border-blue-200 hover:bg-blue-200 transition"
+          className="text-sm bg-blue-100 flex items-center gap-3 text-blue-700 px-4 py-1.5 rounded-md border border-blue-200 hover:bg-blue-200 transition"
         >
-          ⬅ Back to Dashboard
+            Go to Dashboard <ArrowRightCircle className='w-5 h-5'/>
         </button>
       </div>
 
