@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../api/auth';
 import toast from 'react-hot-toast';
 import { jwtDecode } from 'jwt-decode';
+import GoogleLoginBtn from '../components/GoogleLoginBtn'; // ✅ Import Google button
 
 import {
   Paper,
@@ -29,7 +30,6 @@ export default function Register() {
 
   const [loading, setLoading] = useState(false);
 
-  // 🔒 Redirect if user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -56,7 +56,6 @@ export default function Register() {
 
       toast.success('🎉 Registration successful!');
 
-      // Role-based redirect
       setTimeout(() => {
         if (role === 'admin') {
           navigate('/dashboard/admin');
@@ -162,6 +161,12 @@ export default function Register() {
               {loading ? 'Registering...' : 'Register'}
             </Button>
           </form>
+
+          {/* — Or use Google — */}
+          <Typography align="center" sx={{ mt: 2, mb: 1 }}>
+            — Or continue with —
+          </Typography>
+          <GoogleLoginBtn role={form.role} /> {/* ✅ Google Button */}
 
           <Typography variant="body2" align="center" sx={{ mt: 3 }}>
             Already have an account?{' '}

@@ -2,83 +2,77 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
 import toast from 'react-hot-toast';
-
 import {
   Paper,
   TextField,
   Button,
   Typography,
   CircularProgress,
+  MenuItem,
 } from '@mui/material';
-
 import LoginIcon from '@mui/icons-material/Login';
-import { jwtDecode } from 'jwt-decode'; // ✅ FIXED: named import
+import { jwtDecode } from 'jwt-decode';
+import GoogleLoginBtn from '../components/GoogleLoginBtn';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '', role: 'user' });
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
+  /* ---------- handlers ---------- */
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { email, password } = form;
 
-    if (!form.email || !form.password) {
-      toast.error('Please fill in both fields');
-      return;
-    }
+    if (!email || !password) return toast.error('Please fill in all fields');
 
     try {
       setLoading(true);
-      const res = await login(form);
-      const token = res.data.token;
 
-      // Save token
+      /* ---- API login ---- */
+      const { data } = await login(form);           // includes role field
+      const token = data.token;
       localStorage.setItem('token', token);
 
-      // ✅ Decode to get role
+      /* ---- decode real role ---- */
       const decoded = jwtDecode(token);
-      const role = decoded?.role;
+      const trueRole = decoded?.role;
 
-      toast.success('You Have Logged In Successfully 👏');
+      toast.success('Logged in successfully 👏');
 
-      // ✅ Navigate based on role
-      if (role === 'admin') {
-        navigate('/dashboard/admin');
-      } else {
-        navigate('/dashboard');
-      }
-
+      /* ---- route by real role ---- */
+      if (trueRole === 'admin') navigate('/dashboard/admin');
+      else navigate('/dashboard');
     } catch (err) {
-      const message = err?.response?.data?.error || 'Login failed. Server is not responding.';
-      toast.error(message);
+      toast.error(err?.response?.data?.error || 'Login failed');
     } finally {
       setLoading(false);
     }
   };
 
+  /* ---------- UI ---------- */
   return (
     <section className="min-h-screen grid md:grid-cols-2">
-      {/* Left Section */}
-      <div className="md:flex flex-col items-center justify-center bg-gradient-to-br from-green-400 to-teal-500 text-white p-10">
+      {/* Left side */}
+      <div className="hidden md:flex flex-col items-center justify-center bg-gradient-to-br from-green-400 to-teal-500 text-white p-10">
         <h1 className="text-4xl font-bold mb-4">Welcome 👋</h1>
         <p className="text-lg text-center max-w-md">
-          Sign in to explore your Excel Analytics Dashboard and gain valuable insights.
+          Sign in to explore your Excel Analytics dashboard.
         </p>
         <img
           src="/src/assets/Images/login-Illustration-Photoroom.png"
-          alt="Login Illustration"
+          alt="Login illustration"
           className="w-64 mt-8"
         />
       </div>
 
-      {/* Right Section */}
+      {/* Right side */}
       <div className="flex items-center justify-center bg-white px-6 py-12">
         <div className="w-full max-w-md">
-          <Paper elevation={4} sx={{ padding: 4, borderRadius: 4 }}>
+          <Paper elevation={4} sx={{ p: 4, borderRadius: 4 }}>
             <Typography
               variant="h5"
               sx={{ color: 'success.main', fontWeight: 'bold', textAlign: 'center', mb: 3 }}
@@ -92,24 +86,28 @@ export default function Login() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="you@example.com"
                 type="email"
                 fullWidth
-                variant="outlined"
-                autoComplete="email"
               />
-
               <TextField
                 label="Password"
                 name="password"
                 value={form.password}
                 onChange={handleChange}
-                placeholder="Enter your password"
                 type="password"
                 fullWidth
-                variant="outlined"
-                autoComplete="current-password"
               />
+              <TextField
+                select
+                label="Login as"
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                fullWidth
+              >
+                <MenuItem value="user">User</MenuItem>
+                <MenuItem value="admin">Admin</MenuItem>
+              </TextField>
 
               <Button
                 type="submit"
@@ -129,6 +127,11 @@ export default function Login() {
                 {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
               </Button>
             </form>
+
+            <Typography align="center" sx={{ mt: 2, mb: 1 }}>
+              — Or continue with —
+            </Typography>
+            <GoogleLoginBtn role={form.role} />
 
             <Typography
               variant="body2"
