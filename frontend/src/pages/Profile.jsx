@@ -4,11 +4,9 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
 
-/* 1. Global config */
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
-const STATIC = import.meta.env.VITE_STATIC_URL || 'http://localhost:8000'; // for /uploads
+const STATIC = import.meta.env.VITE_STATIC_URL || 'http://localhost:8000';
 
-/* 2. Memoized Axios with auth */
 const useApi = (token) =>
   useMemo(() => {
     const instance = axios.create({ baseURL: API_BASE });
@@ -31,7 +29,6 @@ export default function Profile() {
   const api = useApi(token);
   const navigate = useNavigate();
 
-  /* 3. Fetch profile */
   useEffect(() => {
     const controller = new AbortController();
     (async () => {
@@ -48,7 +45,6 @@ export default function Profile() {
     return () => controller.abort();
   }, [api]);
 
-  /* 4. Save profile */
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
@@ -57,7 +53,7 @@ export default function Profile() {
       formData.append('email', user.email);
       if (password) formData.append('password', password);
       if (imageFile) formData.append('image', imageFile);
-      else if (user.image) formData.append('existingImage', user.image); // fallback
+      else if (user.image) formData.append('existingImage', user.image);
 
       const { data } = await api.put('/user/profile', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -74,33 +70,32 @@ export default function Profile() {
     }
   }, [api, user, password, imageFile]);
 
-  /* 5. Profile picture preview */
   const previewUrl = imageFile
     ? URL.createObjectURL(imageFile)
     : user.image
     ? `${STATIC}${user.image}`
     : '/default-avatar.png';
 
-  /* 6. Loading state */
   if (loading) {
     return (
       <div className="flex justify-center mt-20">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
       </div>
     );
   }
 
-  /* 7. UI layout */
   return (
-    <div className="max-w-xl mx-auto bg-white shadow p-6 rounded-xl mt-8 space-y-6">
+    <div className="max-w-2xl mx-auto p-6 sm:p-8 mt-10 bg-gradient-to-br from-white to-slate-100 rounded-2xl shadow-2xl border border-gray-100 space-y-8">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-blue-700">Profile Settings</h1>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+          Your Profile
+        </h1>
         <button
           onClick={() => navigate('/dashboard')}
-          className="bg-gray-100 text-sm text-blue-600 cursor-pointer px-3 py-1 rounded border border-blue-200 hover:bg-blue-50 transition"
+          className="text-sm bg-blue-100 text-blue-700 px-4 py-1.5 rounded-md border border-blue-200 hover:bg-blue-200 transition"
         >
-          Go to Dashboard
+          ⬅ Back to Dashboard
         </button>
       </div>
 
@@ -109,9 +104,9 @@ export default function Profile() {
         <img
           src={previewUrl}
           alt="Avatar"
-          className="w-24 h-24 rounded-full object-cover mb-2 ring-2 ring-blue-500/30"
+          className="w-28 h-28 rounded-full object-cover ring-4 ring-blue-300 shadow-md transition-all duration-300 hover:scale-105"
         />
-        <label className="cursor-pointer text-sm text-blue-600 hover:underline">
+        <label className="mt-2 text-sm text-blue-600 hover:underline cursor-pointer">
           Change photo
           <input
             type="file"
@@ -122,26 +117,35 @@ export default function Profile() {
         </label>
       </div>
 
-      {/* Info summary */}
-      <div className="text-left space-y-1">
-        <p><strong>Name:</strong> {user.name}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Role:</strong> {user.role}</p>
+      {/* Info Summary */}
+      <div className="grid grid-cols-2 gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div>
+          <p className="text-sm text-gray-500">Name</p>
+          <p className="font-medium text-gray-900">{user.name}</p>
+        </div>
+        <div>
+          <p className="text-sm text-gray-500">Email</p>
+          <p className="font-medium text-gray-900">{user.email}</p>
+        </div>
+        <div>
+          <p className="text-sm text-gray-500">Role</p>
+          <p className="font-medium text-gray-900">{user.role}</p>
+        </div>
       </div>
 
-      {/* Edit form */}
-      <div className="border-t pt-6 space-y-4">
-        <h3 className="text-lg font-semibold">Edit Details</h3>
+      {/* Form */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">Edit Profile</h2>
 
         <input
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Name"
           value={user.name}
           disabled={saving}
           onChange={(e) => setUser({ ...user, name: e.target.value })}
         />
         <input
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Email"
           type="email"
           value={user.email}
@@ -149,7 +153,7 @@ export default function Profile() {
           onChange={(e) => setUser({ ...user, email: e.target.value })}
         />
         <input
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="New password (optional)"
           type="password"
           value={password}
@@ -160,7 +164,7 @@ export default function Profile() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="bg-blue-600 text-white px-4 py-2 cursor-pointer rounded hover:bg-blue-700 transition flex items-center justify-center"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-md shadow-lg hover:from-blue-700 hover:to-purple-700 transition flex items-center justify-center"
         >
           {saving && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
           {saving ? 'Saving…' : 'Save Changes'}
