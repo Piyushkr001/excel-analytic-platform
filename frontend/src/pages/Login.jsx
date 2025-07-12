@@ -128,11 +128,6 @@ export default function Login() {
               </Button>
             </form>
 
-            <Typography align="center" sx={{ mt: 2, mb: 1 }}>
-              — Or continue with —
-            </Typography>
-            <GoogleLoginBtn role={form.role} />
-
             <Typography
               variant="body2"
               align="right"
@@ -141,6 +136,13 @@ export default function Login() {
             >
               Forgot Password?
             </Typography>
+
+            <Typography align="center" sx={{ mt: 2, mb: 1 }}>
+              — Or continue with —
+            </Typography>
+            <GoogleLoginBtn role={form.role} />
+
+            
 
             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
               Don&apos;t have an account?{' '}
